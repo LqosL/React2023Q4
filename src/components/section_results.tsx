@@ -1,19 +1,23 @@
 import React, { ReactNode} from "react";
+import {Result} from "../Result";
 
-export function Results_unit({name, desc}: {name: string, desc: string}):ReactNode {
+export function Results_unit({title, author_name, first_publish_year}: Result):ReactNode {
   return (
     <li className='results_unit'>
-      <span className='results_name'>
-        {name}
+      <span className='info results_title'>
+        {title}
       </span>
-      <span className='results_descr'>
-        {desc}
+      <span className='info results_author'>
+        {author_name}
+      </span>
+      <span className='info results_first-published'>
+        {first_publish_year}
       </span>
     </li>
   )
 }
 
-export default function Results_section (results: Array<{name: string, desc: string}>): ReactNode {
+export default function Results_section ({results}: {results: Array <Result>}): ReactNode {
   return (
     <div>
       <ul className='results_list'>

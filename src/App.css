@@ -3,40 +3,60 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+body {
+  background-color: #392a22;
+  background-image: url("assets/library.png");
+  background-position-y: bottom;
+  background-repeat-y: no-repeat;
+  background-blend-mode: soft-light;
+  background-size: contain;
+  opacity: 0.7;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.info {
+  margin: 20px;
+  min-width: 30%;
+  font-size: 1.3rem;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.results_list {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20vh;
+  color: white;
+}
+li {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.search_input {
+  width: 60vw;
+  margin: 20px;
+  font-size: 1.8rem;
+  border: 2px solid grey;
+  border-radius: 10px;
+  padding: 8px;
+}
+.search_button {
+  font-size: 1.2rem;
+  border: 2px solid grey;
+  border-radius: 10px;
+}
+.search_button:hover, .search_input:hover {
+  cursor: pointer;
+  transform: scale(1.03);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.results_title {
+  font-style: italic;
+  font-weight: bold;
+  font-size: 1.4rem;
 }
 
-.card {
-  padding: 2em;
-}
 
-.read-the-docs {
-  color: #888;
-}
+
