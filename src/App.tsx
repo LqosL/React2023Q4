@@ -7,13 +7,15 @@ import Search_section from './components/search_section';
 import { Result } from './Result';
 import Error_button from './components/error_button';
 import ErrorBoundary, { activateError } from './components/error_boundary';
+import { DefaultLs_wrapper } from './components/ls_wrapper';
 
 class App extends Component {
-  searchInputState: string = '';
+  searchInputState: string = DefaultLs_wrapper.getLastSearch();
   results: Array<Result> = [];
   isMounted: boolean = false;
 
   setSearchInputState(state: string) {
+    DefaultLs_wrapper.setLastSearch(state);
     this.searchInputState = state;
     this.isMounted ? this.forceUpdate() : null;
   }
@@ -32,9 +34,10 @@ class App extends Component {
     this.isMounted = false;
   }
   async doSearch(searchState: string): Promise<Array<Result>> {
+    const searchString = searchState.trim();
     const request: string =
       'https://openlibrary.org/search.json?q=' +
-      searchState.trim() +
+      (searchString.length ? searchString : 'a') +
       '&page=1&limit=7';
     const response = await fetch(request).then((res: Response) => res.json());
     this.setResults(response['docs']);
