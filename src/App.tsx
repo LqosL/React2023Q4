@@ -13,7 +13,21 @@ class App extends Component {
   searchInputState: string = DefaultLs_wrapper.getLastSearch();
   results: Array<Result> = [];
   isMounted: boolean = false;
+  async doSearch(searchState: string): Promise<Array<Result>> {
+    const searchString = searchState.trim();
+    const request: string =
+      'https://openlibrary.org/search.json?q=' +
+      (searchString.length ? searchString : 'a') +
+      '&page=1&limit=7';
+    const response = await fetch(request).then((res: Response) => res.json());
+    this.setResults(response['docs']);
+    return response['docs'];
+  }
+  constructor(props: object) {
+    super(props);
 
+    this.doSearch(this.searchInputState);
+  }
   setSearchInputState(state: string) {
     DefaultLs_wrapper.setLastSearch(state);
     this.searchInputState = state;
@@ -33,17 +47,6 @@ class App extends Component {
   componentWillUnmount() {
     this.isMounted = false;
   }
-  async doSearch(searchState: string): Promise<Array<Result>> {
-    const searchString = searchState.trim();
-    const request: string =
-      'https://openlibrary.org/search.json?q=' +
-      (searchString.length ? searchString : 'a') +
-      '&page=1&limit=7';
-    const response = await fetch(request).then((res: Response) => res.json());
-    this.setResults(response['docs']);
-    return response['docs'];
-  }
-
   render() {
     return (
       <>
