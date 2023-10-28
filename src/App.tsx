@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import {Component, ReactNode} from 'react';
 import './App.css';
 import Results_section from './components/section_results';
 import Search_button from './components/search_button';
@@ -9,11 +9,18 @@ import Error_button from './components/error_button';
 import ErrorBoundary, { activateError } from './components/error_boundary';
 import { DefaultLs_wrapper } from './components/ls_wrapper';
 
-class App extends Component {
+type AppState = {
+  loading: boolean;
+}
+class App extends Component<object, AppState> {
   searchInputState: string = DefaultLs_wrapper.getLastSearch();
   results: Array<Result> = [];
   isMounted: boolean = false;
   async doSearch(searchState: string): Promise<Array<Result>> {
+    this.results = [];
+    if (this.isMounted) {
+      this.setState({loading: true});
+    }
     const searchString = searchState.trim();
     const request: string =
       'https://openlibrary.org/search.json?q=' +
@@ -21,11 +28,14 @@ class App extends Component {
       '&page=1&limit=7';
     const response = await fetch(request).then((res: Response) => res.json());
     this.setResults(response['docs']);
+    if (this.isMounted) {
+      this.setState({loading: false});
+    }
     return response['docs'];
   }
   constructor(props: object) {
     super(props);
-
+      this.state = {loading: true}
     this.doSearch(this.searchInputState);
   }
   setSearchInputState(state: string) {
@@ -48,6 +58,8 @@ class App extends Component {
     this.isMounted = false;
   }
   render() {
+    const loading: boolean = this.state.loading;
+    const loadingContent: ReactNode = loading?(<div className='loader'>...LOADING...</div>):(<></>);
     return (
       <>
         <ErrorBoundary>
@@ -62,6 +74,7 @@ class App extends Component {
               onClick={() => this.doSearch(this.searchInputState)}
             />
           </Search_section>
+          {loadingContent}
           <Results_section results={this.results} />
           <Error_button
             onClick={() => {

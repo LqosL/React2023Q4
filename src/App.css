@@ -65,7 +65,7 @@ li {
   bottom: 50px;
   right: 50px;
 }
-.empty_list {
+.empty_list, .loader {
   font-weight: bold;
   font-size: 2rem;
   color: white;
