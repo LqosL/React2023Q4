@@ -9,7 +9,7 @@
 }
 body {
   background-color: #392a22;
-  background-image: url("assets/library.png");
+  background-image: url('assets/library.png');
   background-position-y: bottom;
   background-repeat-y: no-repeat;
   background-blend-mode: soft-light;
@@ -47,7 +47,8 @@ li {
   border: 2px solid grey;
   border-radius: 10px;
 }
-.search_button:hover, .search_input:hover {
+.search_button:hover,
+.search_input:hover {
   cursor: pointer;
   transform: scale(1.03);
 }
@@ -58,5 +59,14 @@ li {
   font-size: 1.4rem;
 }
 
-
-
+.error_button {
+  width: 150px;
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+}
+.empty_list {
+  font-weight: bold;
+  font-size: 2rem;
+  color: white;
+}

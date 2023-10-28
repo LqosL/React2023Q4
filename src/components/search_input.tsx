@@ -5,7 +5,7 @@ export default function Search_input({
   onStateChange,
 }: {
   state: string;
-  onStateChange: React.Dispatch<React.SetStateAction<string>>;
+  onStateChange: (state: string) => void;
 }): ReactNode {
   return (
     <input
