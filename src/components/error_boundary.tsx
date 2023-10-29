@@ -1,16 +1,21 @@
-import { Component } from 'react';
+import {Component, ReactNode} from 'react';
 
-export function activateError(): void {
-  throw new Error('OOPS! Something is wrong');
+type ErrorBoundary_props = {
+  children: ReactNode;
+  fallback: (error: Error) => ReactNode;
 }
-export default class ErrorBoundary extends Component {
+type ErrorBoundary_state = {
   hasError: boolean;
-  constructor(props: object) {
+}
+export default class ErrorBoundary extends Component<ErrorBoundary_props, ErrorBoundary_state> {
+  static codeError?: Error;
+  constructor(props: ErrorBoundary_props) {
     super(props);
-    this.hasError = false;
+    this.state = {hasError: false};
   }
 
-  static getDerivedStateFromError() {
+  static getDerivedStateFromError(error: Error) {
+    ErrorBoundary.codeError = error;
     return { hasError: true };
   }
 
@@ -19,8 +24,10 @@ export default class ErrorBoundary extends Component {
   }
 
   render() {
-    if (this.hasError) {
-      activateError();
+    if (this.state.hasError || ErrorBoundary.codeError !== undefined) {
+      return (<>
+        {this.props.fallback(ErrorBoundary.codeError || new Error('Cannot find the error'))}
+      </>);
     }
     return this.props.children;
   }

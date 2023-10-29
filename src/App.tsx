@@ -6,11 +6,13 @@ import Search_input from './components/search_input';
 import Search_section from './components/search_section';
 import { Result } from './Result';
 import Error_button from './components/error_button';
-import ErrorBoundary, { activateError } from './components/error_boundary';
+import ErrorBoundary from './components/error_boundary';
 import { DefaultLs_wrapper } from './components/ls_wrapper';
+import Error_messager, {Error_thrower} from "./components/error_message";
 
 type AppState = {
   loading: boolean;
+  throwError: boolean;
 }
 class App extends Component<object, AppState> {
   searchInputState: string = DefaultLs_wrapper.getLastSearch();
@@ -24,7 +26,7 @@ class App extends Component<object, AppState> {
     const searchString = searchState.trim();
     const request: string =
       'https://openlibrary.org/search.json?q=' +
-      (searchString.length ? searchString : 'a') +
+      (searchString.length ? searchString : 'hello') +
       '&page=1&limit=7';
     const response = await fetch(request).then((res: Response) => res.json());
     this.setResults(response['docs']);
@@ -35,7 +37,7 @@ class App extends Component<object, AppState> {
   }
   constructor(props: object) {
     super(props);
-      this.state = {loading: true}
+      this.state = {loading: true, throwError: false}
     this.doSearch(this.searchInputState);
   }
   setSearchInputState(state: string) {
@@ -62,7 +64,8 @@ class App extends Component<object, AppState> {
     const loadingContent: ReactNode = loading?(<div className='loader'>...LOADING...</div>):(<></>);
     return (
       <>
-        <ErrorBoundary>
+        <ErrorBoundary fallback={() => Error_messager()}>
+          <Error_thrower mustThrow={this.state.throwError}/>
           <Search_section>
             <Search_input
               state={this.searchInputState}
@@ -75,10 +78,10 @@ class App extends Component<object, AppState> {
             />
           </Search_section>
           {loadingContent}
-          <Results_section results={this.results} />
+          <Results_section results={this.results} inLoadingNow={this.state.loading} />
           <Error_button
             onClick={() => {
-              activateError();
+              this.setState(Object.assign(this.state, {throwError: true}))
             }}
           ></Error_button>
         </ErrorBoundary>
