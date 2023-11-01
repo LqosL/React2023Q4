@@ -19,6 +19,7 @@ class App extends Component<object, AppState> {
   results: Array<Result> = [];
   isMounted: boolean = false;
   async doSearch(searchState: string): Promise<Array<Result>> {
+    DefaultLs_wrapper.setLastSearch(this.searchInputState);
     this.results = [];
     if (this.isMounted) {
       this.setState({loading: true});
@@ -41,7 +42,6 @@ class App extends Component<object, AppState> {
     this.doSearch(this.searchInputState);
   }
   setSearchInputState(state: string) {
-    DefaultLs_wrapper.setLastSearch(state);
     this.searchInputState = state;
     this.isMounted ? this.forceUpdate() : null;
   }
