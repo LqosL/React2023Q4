@@ -1,4 +1,4 @@
-import {Component, ReactNode} from 'react';
+import React, {ReactNode, useEffect, useState} from 'react';
 import './App.css';
 import Results_section from './components/SectionResults';
 import SearchButton from './components/SearchButton';
@@ -12,85 +12,76 @@ import ErrorMessager from "./components/ErrorMessager";
 import PaginationWrapper from "./components/PaginationWrapper";
 import ErrorThrower from "./components/ErrorThrower";
 
-type AppState = {
-  loading: boolean;
-  throwError: boolean;
-}
-class App extends Component<object, AppState> {
-  searchInputState: string = DefaultLs_wrapper.getLastSearch();
-  results: Array<Result> = [];
-  isMounted: boolean = false;
-  async doSearch(searchState: string): Promise<Array<Result>> {
-    DefaultLs_wrapper.setLastSearch(this.searchInputState);
-    this.results = [];
-    if (this.isMounted) {
-      this.setState({loading: true});
+function App(): ReactNode {
+  const [isLoading, setIsLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState(false);
+  const [searchInputState, setSearchInputState]: [string, React.Dispatch<React.SetStateAction<string>>] = useState('hello');
+  const [results, setResults]: [Array<Result>, React.Dispatch<React.SetStateAction<Array<Result>>>] = useState<Array<Result>>([]);
+  const [mustThrowError, setMustThrowError]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState(false);
+  const [requireSearch, setRequireSearch] = useState(true);
+
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  async function doSearch(searchState: string): Promise<Array<Result>> {
+    let searchString = searchState.trim();
+
+    if (searchString.length === 0) {
+      searchString = searchInputState;
     }
-    const searchString = searchState.trim();
+
+    setSearchInputState(searchString);
+    setIsLoading(true);
+
     const request: string =
-      'https://openlibrary.org/search.json?q=' +
-      (searchString.length ? searchString : 'hello') +
-      '&page=1&limit=7';
-    const response = await fetch(request).then((res: Response) => res.json());
-    this.setResults(response['docs']);
-    if (this.isMounted) {
-      this.setState({loading: false});
-    }
-    return response['docs'];
-  }
-  constructor(props: object) {
-    super(props);
-      this.state = {loading: true, throwError: false}
-    this.doSearch(this.searchInputState);
-  }
-  setSearchInputState(state: string) {
-    this.searchInputState = state;
-    this.isMounted ? this.forceUpdate() : null;
-  }
-  setResults(results: Array<Result>) {
-    this.results = results;
-    if (this.isMounted) {
-      this.forceUpdate();
-    }
+        'https://openlibrary.org/search.json?q=' +
+        (searchString.length ? searchString : 'hello') +
+        '&page=1&limit=7';
+    const response = await fetch(request)
+        .then((res: Response) => res.json())
+        .catch(() => {
+          return []
+        });
+    setResults(response['docs'] || []);
+    setIsLoading(false);
+    return response['docs'] || [];
   }
 
-  componentDidMount() {
-    this.isMounted = true;
-  }
+  useEffect((): void => {
+    if (requireSearch) {
+      setRequireSearch(false);
+      doSearch(DefaultLs_wrapper.getLastSearch());
+    }
+  }, [requireSearch, setRequireSearch, doSearch]);
 
-  componentWillUnmount() {
-    this.isMounted = false;
-  }
-  render() {
-    const loading: boolean = this.state.loading;
-    const loadingContent: ReactNode = loading?(<div className='loader'>...LOADING...</div>):(<></>);
-    return (
+  const loadingContent: ReactNode = isLoading?(<div className='loader'>...LOADING...</div>):(<></>);
+
+  return (
       <>
         <ErrorBoundary fallback={() => ErrorMessager()}>
-          <ErrorThrower mustThrow={this.state.throwError}/>
+          <ErrorThrower mustThrow={mustThrowError}/>
           <SearchSection>
             <SearchInput
-              state={this.searchInputState}
-              onStateChange={(newValue: string) =>
-                this.setSearchInputState(newValue)
+                state={searchInputState}
+                onStateChange={(newValue: string) => {
+                  setSearchInputState(newValue);
+                  DefaultLs_wrapper.setLastSearch(newValue);
+                }
               }
             />
             <SearchButton
-              onClick={() => this.doSearch(this.searchInputState)}
+                onClick={() => doSearch(searchInputState)}
             />
           </SearchSection>
           {loadingContent}
-          <Results_section results={this.results} inLoadingNow={this.state.loading} />
+          <Results_section results={results} inLoadingNow={isLoading} />
           <ErrorButton
-            onClick={() => {
-              this.setState(Object.assign(this.state, {throwError: true}))
-            }}
-          ></ErrorButton>
+              onClick={() => {
+                setMustThrowError(true)
+              }}
+          />
           <PaginationWrapper/>
         </ErrorBoundary>
       </>
-    );
-  }
+  );
 }
 
 export default App;

@@ -60,10 +60,11 @@ li {
 }
 
 .error_button {
-  width: 150px;
+  width: 120px;
   position: fixed;
   bottom: 50px;
   right: 50px;
+  border-radius: 50%;
 }
 .empty_list, .loader, .error {
   font-weight: bold;

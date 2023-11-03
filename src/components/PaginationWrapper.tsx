@@ -11,7 +11,7 @@ export default function PaginationWrapper({itemsPerPage = 7, currentPage = 0}): 
             <div>
                 <label>
                     Show by
-                    <input type='number' min={5} max={10} id='sizeInput' value={itemsPerPage}/>
+                    <input type='number' min={5} max={10} id='sizeInput' defaultValue={itemsPerPage}/>
                 </label>
             </div>
         </div>
