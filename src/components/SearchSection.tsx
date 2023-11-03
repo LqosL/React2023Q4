@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-export default function Search_section({
+export default function SearchSection({
   children,
 }: {
   children: ReactNode;

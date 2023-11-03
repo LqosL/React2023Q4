@@ -1,15 +1,16 @@
 import {Component, ReactNode} from 'react';
 import './App.css';
-import Results_section from './components/section_results';
-import Search_button from './components/search_button';
-import Search_input from './components/search_input';
-import Search_section from './components/search_section';
-import { Result } from './Result';
-import Error_button from './components/error_button';
-import ErrorBoundary from './components/error_boundary';
+import Results_section from './components/SectionResults';
+import SearchButton from './components/SearchButton';
+import SearchInput from './components/SearchInput';
+import SearchSection from './components/SearchSection';
+import { Result } from './types/Result';
+import ErrorButton from './components/ErrorButton';
+import ErrorBoundary from './components/ErrorBoundary';
 import { DefaultLs_wrapper } from './components/ls_wrapper';
-import Error_messager, {Error_thrower} from "./components/error_message";
-import PaginationWrapper from "./components/pagination_wrapper";
+import ErrorMessager from "./components/ErrorMessager";
+import PaginationWrapper from "./components/PaginationWrapper";
+import ErrorThrower from "./components/ErrorThrower";
 
 type AppState = {
   loading: boolean;
@@ -65,26 +66,26 @@ class App extends Component<object, AppState> {
     const loadingContent: ReactNode = loading?(<div className='loader'>...LOADING...</div>):(<></>);
     return (
       <>
-        <ErrorBoundary fallback={() => Error_messager()}>
-          <Error_thrower mustThrow={this.state.throwError}/>
-          <Search_section>
-            <Search_input
+        <ErrorBoundary fallback={() => ErrorMessager()}>
+          <ErrorThrower mustThrow={this.state.throwError}/>
+          <SearchSection>
+            <SearchInput
               state={this.searchInputState}
               onStateChange={(newValue: string) =>
                 this.setSearchInputState(newValue)
               }
             />
-            <Search_button
+            <SearchButton
               onClick={() => this.doSearch(this.searchInputState)}
             />
-          </Search_section>
+          </SearchSection>
           {loadingContent}
           <Results_section results={this.results} inLoadingNow={this.state.loading} />
-          <Error_button
+          <ErrorButton
             onClick={() => {
               this.setState(Object.assign(this.state, {throwError: true}))
             }}
-          ></Error_button>
+          ></ErrorButton>
           <PaginationWrapper/>
         </ErrorBoundary>
       </>

@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-export default function Search_input({
+export default function SearchInput({
   state,
   onStateChange,
 }: {

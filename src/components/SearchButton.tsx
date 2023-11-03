@@ -1,13 +1,13 @@
 import React, { ReactNode } from 'react';
 
-export default function Error_button({
+export default function SearchButton({
   onClick,
 }: {
   onClick: () => void;
 }): ReactNode {
   return (
-    <button onClick={onClick} className="error_button">
-      THROW AN ERROR
+    <button onClick={onClick} className="search_button">
+      SEARCH
     </button>
   );
 }
