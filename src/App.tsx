@@ -9,6 +9,7 @@ import Error_button from './components/error_button';
 import ErrorBoundary from './components/error_boundary';
 import { DefaultLs_wrapper } from './components/ls_wrapper';
 import Error_messager, {Error_thrower} from "./components/error_message";
+import PaginationWrapper from "./components/pagination_wrapper";
 
 type AppState = {
   loading: boolean;
@@ -84,6 +85,7 @@ class App extends Component<object, AppState> {
               this.setState(Object.assign(this.state, {throwError: true}))
             }}
           ></Error_button>
+          <PaginationWrapper/>
         </ErrorBoundary>
       </>
     );

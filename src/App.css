@@ -70,3 +70,12 @@ li {
   font-size: 2rem;
   color: white;
 }
+.paginWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.paginDisp {
+  color: white;
+  font-size: 2rem;
+}
