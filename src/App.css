@@ -66,7 +66,9 @@ li {
   right: 50px;
   border-radius: 50%;
 }
-.empty_list, .loader, .error {
+.empty_list,
+.loader,
+.error {
   font-weight: bold;
   font-size: 2rem;
   color: white;
@@ -76,7 +78,39 @@ li {
   flex-direction: column;
   gap: 10px;
 }
-.paginDisp {
-  color: white;
-  font-size: 2rem;
+.paginDisp,
+.details_list {
+  color: #100c0c;
+  font-size: 1.2rem;
+  font-weight: bolder;
+}
+
+.main {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.details_list {
+  background: linear-gradient(
+      7deg,
+      rgba(108, 92, 60, 0.2) 0%,
+      rgba(217, 214, 214, 0.5) 60%
+    ),
+    url('assets/book.png');
+  background-size: contain;
+  min-height: 50vh;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+}
+.details_key {
+  font-size: 1.3rem;
+  font-weight: bold;
+  text-decoration: underline;
+}
+.details_value {
+  font-size: 1rem;
 }

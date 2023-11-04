@@ -13,7 +13,9 @@ export default function SearchInput({
       className="search_input"
       placeholder="Enter the book or the author..."
       value={state}
-      onInput={(e) => onStateChange(e.currentTarget.value)}
+      onInput={(e: React.FormEvent<HTMLInputElement>) =>
+        onStateChange(e.currentTarget.value)
+      }
     ></input>
   );
 }
