@@ -103,7 +103,11 @@ function App(): ReactNode {
     }
   }, [requireSearch, setRequireSearch, doSearch]);
 
-  const loadingContent: ReactNode = isLoading?(<div className='loader'>...LOADING...</div>):(<></>);
+  const loadingContent: ReactNode = isLoading?(
+      <div className='loader'>...LOADING...</div>
+  ):(
+      <PaginationWrapper currentPage={searchQueryParams.get('page') || '1'} itemsPerPage={searchQueryParams.get('count') || '7'} changePagination={changePagination}/>
+  );
 
   return (
       <>
@@ -122,14 +126,14 @@ function App(): ReactNode {
                 onClick={() => doSearch(searchInputState)}
             />
           </SearchSection>
-          {loadingContent}
+
           <Results_section results={results} inLoadingNow={isLoading} />
           <ErrorButton
               onClick={(): void => {
                 setMustThrowError(true)
               }}
           />
-          <PaginationWrapper currentPage={searchQueryParams.get('page') || '1'} itemsPerPage={searchQueryParams.get('count') || '7'} changePagination={changePagination}/>
+            {loadingContent}
         </ErrorBoundary>
       </>
   );
