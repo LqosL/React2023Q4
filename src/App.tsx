@@ -55,12 +55,12 @@ function App(): ReactNode {
   if (countString != null) {
       let countIsCorrect = true;
       count = parseInt(countString);
-      if (count < 7  || isNaN(parseInt(countString)) || count.toString() !== countString) {
-          count = 7;
+      if (count < 5  || isNaN(parseInt(countString)) || count.toString() !== countString) {
+          count = 5;
           countIsCorrect = false;
       }
-      if (count > 10) {
-          count = 10
+      if (count > 15) {
+          count = 15;
           countIsCorrect = false;
       }
       if (!countIsCorrect) {setSearchQueryParams((params) => {
@@ -126,7 +126,6 @@ function App(): ReactNode {
                 onClick={() => doSearch(searchInputState)}
             />
           </SearchSection>
-
           <Results_section results={results} inLoadingNow={isLoading} />
           <ErrorButton
               onClick={(): void => {

@@ -1,6 +1,9 @@
-import {ReactNode} from "react";
+import React, {ReactNode, useState} from "react";
 
 export default function PaginationWrapper({itemsPerPage, currentPage, changePagination}: {itemsPerPage: string, currentPage: string, changePagination: (pageNum: string, pageSize: string)=> void}): ReactNode {
+    const [pageSize, setPageSize]: [pageSize: number, setPageSize: React.Dispatch<React.SetStateAction<string>>] = useState(itemsPerPage)
+
+
     return (
         <div className='paginWrapper'>
             <div>
@@ -11,7 +14,10 @@ export default function PaginationWrapper({itemsPerPage, currentPage, changePagi
             <div>
                 <label>
                     Show by
-                    <input type='number' min={5} max={10} id='sizeInput' defaultValue={itemsPerPage}/>
+                    <input type='number' min={5} max={15} id='sizeInput' defaultValue={pageSize}
+                           onChange={(event) =>
+                                setPageSize(event.target.value) }/>
+                    <button type={'submit'} onClick={() => changePagination(currentPage, pageSize.toString())}> Apply </button>
                 </label>
             </div>
         </div>
