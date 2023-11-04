@@ -13,18 +13,15 @@ import PaginationWrapper from './components/PaginationWrapper';
 import ErrorThrower from './components/ErrorThrower';
 import {
   NavigateOptions,
+  Outlet,
   URLSearchParamsInit,
+  useLocation,
+  useNavigate,
   useSearchParams,
 } from 'react-router-dom';
-import DetailsSection from './components/SectionDetails';
-import { Detail } from './types/Detail';
 
 function App(): ReactNode {
   const [listIsLoading, setListIsLoading]: [
-    boolean,
-    React.Dispatch<React.SetStateAction<boolean>>,
-  ] = useState(false);
-  const [detailsIsLoading, setDetailsIsLoading]: [
     boolean,
     React.Dispatch<React.SetStateAction<boolean>>,
   ] = useState(false);
@@ -41,11 +38,6 @@ function App(): ReactNode {
     React.Dispatch<React.SetStateAction<boolean>>,
   ] = useState(false);
   const [requireSearch, setRequireSearch] = useState(true);
-
-  const [shownDetail, setShownDetail]: [
-    Detail | undefined,
-    React.Dispatch<React.SetStateAction<Detail | undefined>>,
-  ] = useState<Detail | undefined>(undefined);
 
   const [searchQueryParams, setSearchQueryParams]: [
     URLSearchParams,
@@ -154,7 +146,7 @@ function App(): ReactNode {
   }, [requireSearch, setRequireSearch, doSearch]);
 
   const loadingContent: ReactNode = listIsLoading ? (
-    <div className="loader">...LOADING...</div>
+    <div className="loader">...LOADING LIST...</div>
   ) : (
     <PaginationWrapper
       currentPage={searchQueryParams.get('page') || '1'}
@@ -163,19 +155,11 @@ function App(): ReactNode {
     />
   );
 
-  async function getDetails(key: string): Promise<void> {
-    setDetailsIsLoading(true);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    const request: string = 'https://openlibrary.org' + key + '.json';
-    const response: Detail | undefined = await fetch(request)
-      .then((res: Response) => res.json())
-      //TODO:: add catch action
-      .catch(() => {
-        return undefined;
-      });
-
-    setShownDetail(response);
-    setDetailsIsLoading(false);
+  async function showDetails(key: string): Promise<void> {
+    navigate({ pathname: key, search: location.search });
   }
 
   return (
@@ -196,17 +180,9 @@ function App(): ReactNode {
           <ResultsSection
             results={results}
             inLoadingNow={listIsLoading}
-            onItemSelected={(result: Result) => getDetails(result.key)}
+            onItemSelected={(result: Result) => showDetails(result.key)}
           />
-          {shownDetail ? (
-            <DetailsSection
-              details={shownDetail}
-              isLoading={detailsIsLoading}
-              onClickOutside={() => setShownDetail(undefined)}
-            />
-          ) : (
-            <></>
-          )}
+          <Outlet />
         </div>
         <ErrorButton
           onClick={(): void => {
