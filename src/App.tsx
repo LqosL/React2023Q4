@@ -37,7 +37,10 @@ function App(): ReactNode {
     boolean,
     React.Dispatch<React.SetStateAction<boolean>>,
   ] = useState(false);
-  const [requireSearch, setRequireSearch] = useState(true);
+  const [requireSearch, setRequireSearch]: [
+    requireSearch: boolean,
+    setRequireSearch: React.Dispatch<React.SetStateAction<boolean>>,
+  ] = useState(true);
 
   const [searchQueryParams, setSearchQueryParams]: [
     URLSearchParams,

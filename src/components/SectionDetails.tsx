@@ -1,11 +1,9 @@
-import React, { ReactNode, useRef } from 'react';
+import React, { ReactNode } from 'react';
 import { Detail } from '../types/Detail';
-import DoOnClickOutside from '../utils/DoOnClickOutside';
 
 export default function DetailsSection({
   isLoading,
   details,
-  onClickOutside,
 }: {
   isLoading: boolean;
   details?: Detail;
@@ -72,12 +70,8 @@ export default function DetailsSection({
     );
   }
 
-  const ref: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
-
-  DoOnClickOutside(ref, onClickOutside);
-
   return (
-    <div className="details_list_wrapper" ref={ref}>
+    <div className="details_list_wrapper">
       {loadingDetails}
       {details ? showDetails(details) : <></>}
     </div>

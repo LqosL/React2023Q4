@@ -52,7 +52,10 @@ export default function SectionDetailsContainer(): ReactNode {
 
   return (
     <div className="details_section_container">
-      <button className="closeDetailsBtn"> ❌ </button>
+      <button className="closeDetailsBtn" onClick={unsetSelectedSectionDetails}>
+        {' '}
+        ❌{' '}
+      </button>
       <DetailsSection
         details={shownDetail}
         isLoading={detailsIsLoading}
