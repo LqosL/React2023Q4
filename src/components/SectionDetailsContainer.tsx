@@ -47,10 +47,13 @@ export default function SectionDetailsContainer(): ReactNode {
   }
 
   return (
-    <DetailsSection
-      details={shownDetail}
-      isLoading={detailsIsLoading}
-      onClickOutside={unsetSelectedSectionDetails}
-    />
+    <div className="details_section_container">
+      <button className="closeDetailsBtn"> ❌ </button>
+      <DetailsSection
+        details={shownDetail}
+        isLoading={detailsIsLoading}
+        onClickOutside={unsetSelectedSectionDetails}
+      />
+    </div>
   );
 }
