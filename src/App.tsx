@@ -129,9 +129,8 @@ function App(): ReactNode {
       count;
     const response = await fetch(request)
       .then((res: Response) => res.json())
-      //TODO:: add catch action
       .catch(() => {
-        return [];
+        return undefined;
       });
     setResults(response['docs'] || []);
     setListIsLoading(false);

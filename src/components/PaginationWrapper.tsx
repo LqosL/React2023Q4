@@ -27,8 +27,7 @@ export default function PaginationWrapper({
             )
           }
         >
-          {' '}
-          Prev page{' '}
+          {'<<'}
         </button>
         <span id="paginDisplay"> {currentPage} </span>
         <button
@@ -41,8 +40,7 @@ export default function PaginationWrapper({
             )
           }
         >
-          {' '}
-          Next page{' '}
+          {'>>'}
         </button>
       </div>
       <div>
@@ -62,8 +60,7 @@ export default function PaginationWrapper({
             type={'submit'}
             onClick={() => changePagination('1', pageSize.toString())}
           >
-            {' '}
-            Apply{' '}
+            Apply
           </button>
         </label>
       </div>

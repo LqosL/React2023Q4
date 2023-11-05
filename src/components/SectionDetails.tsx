@@ -26,8 +26,8 @@ export default function DetailsSection({
       );
     }
 
-    const bookLink = 'https://openlibrary.org' + details.key;
-    const authorLink = details.authors
+    const bookLink: string = 'https://openlibrary.org' + details.key;
+    const authorLink: string | undefined = details.authors
       ? 'https://openlibrary.org' + details.authors[0].author.key
       : undefined;
     return (
@@ -72,7 +72,7 @@ export default function DetailsSection({
     );
   }
 
-  const ref = useRef<HTMLDivElement>(null);
+  const ref: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
 
   DoOnClickOutside(ref, onClickOutside);
 

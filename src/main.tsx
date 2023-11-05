@@ -4,8 +4,9 @@ import App from './App';
 import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import SectionDetailsContainer from './components/SectionDetailsContainer';
+import { Router as RemixRouter } from '@remix-run/router/dist/router';
 
-const router = createBrowserRouter([
+const router: RemixRouter = createBrowserRouter([
   {
     path: '/',
     element: <App />,

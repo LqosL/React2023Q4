@@ -1,4 +1,9 @@
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  NavigateFunction,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import React, { ReactNode, useState } from 'react';
 import { Detail } from '../types/Detail';
 import DetailsSection from './SectionDetails';
@@ -14,7 +19,7 @@ export default function SectionDetailsContainer(): ReactNode {
     Detail | undefined,
     React.Dispatch<React.SetStateAction<Detail | undefined>>,
   ] = useState<Detail | undefined>(undefined);
-  const navigate = useNavigate();
+  const navigate: NavigateFunction = useNavigate();
   const location = useLocation();
   const [latestLoadedKey, setLatestLoadedKey] = useState<string | undefined>();
 
@@ -25,7 +30,6 @@ export default function SectionDetailsContainer(): ReactNode {
     const request: string = 'https://openlibrary.org/works/' + key + '.json';
     const response: Detail | undefined = await fetch(request)
       .then((res: Response) => res.json())
-      //TODO:: add catch action
       .catch(() => {
         return undefined;
       });
