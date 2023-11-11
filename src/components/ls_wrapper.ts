@@ -1,9 +1,13 @@
 export default class Ls_wrapper {
+  private storage: Storage;
+  constructor(storage: Storage = window.localStorage) {
+    this.storage = storage
+  }
   getLastSearch(): string {
-    return window.localStorage.getItem('lastSearch') || '';
+    return this.storage.getItem('lastSearch') || '';
   }
   setLastSearch(string: string): void {
-    window.localStorage.setItem('lastSearch', string);
+    this.storage.setItem('lastSearch', string);
   }
 }
 
