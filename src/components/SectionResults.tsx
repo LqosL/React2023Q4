@@ -16,14 +16,14 @@ export default function ResultsSection({
   }
   if (results.length <= 0 && !inLoadingNow) {
     return (
-        <div className="empty_list">
+        <div role="EmptyList" className="empty_list">
           Nothing found yet
         </div>
     );
   }
   return (
     <div>
-      <ul className="results_list">
+      <ul role="ResultsList" className="results_list" >
         {results.map((value: Result) => {
           const onClick = () => onItemSelected(value);
           return ResultsUnit({ ...value, onClick });
