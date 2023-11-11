@@ -1,16 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
 import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import SectionDetailsContainer from './components/SectionDetailsContainer';
 import { Router as RemixRouter } from '@remix-run/router/dist/router';
 import NotFound from "./components/NotFound";
+import AppContainer from "./AppContainer";
 
 const router: RemixRouter = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: <AppContainer />,
     children: [
       {
         path: '/works/:key',

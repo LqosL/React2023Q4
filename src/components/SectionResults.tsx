@@ -1,25 +1,25 @@
-import React, { ReactNode } from 'react';
+import React, {ReactNode, useContext} from 'react';
 import { Result } from '../types/Result';
 import { ResultsUnit } from './ResultsUnit';
+import {AppContextVariant} from "../AppContext";
 
 export default function ResultsSection({
-  results,
   inLoadingNow,
   onItemSelected,
 }: {
-  results: Array<Result>;
   inLoadingNow: boolean;
   onItemSelected: (result: Result) => object;
 }): ReactNode {
-  if (results.length <= 0 && !inLoadingNow) {
-    return (
-      <div className="empty_list">
-        We are terribly sorry, but nothing was found
-      </div>
-    );
-  }
+    const { results } = useContext(AppContextVariant)
   if (inLoadingNow) {
     return <div></div>;
+  }
+  if (results.length <= 0 && !inLoadingNow) {
+    return (
+        <div className="empty_list">
+          Nothing found yet
+        </div>
+    );
   }
   return (
     <div>

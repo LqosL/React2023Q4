@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useContext, useEffect, useState} from 'react';
 import './App.css';
 import ResultsSection from './components/SectionResults';
 import SearchButton from './components/SearchButton';
@@ -7,7 +7,6 @@ import SearchSection from './components/SearchSection';
 import { Result } from './types/Result';
 import ErrorButton from './components/ErrorButton';
 import ErrorBoundary from './components/ErrorBoundary';
-import { DefaultLs_wrapper } from './components/ls_wrapper';
 import ErrorMessager from './components/ErrorMessager';
 import PaginationWrapper from './components/PaginationWrapper';
 import ErrorThrower from './components/ErrorThrower';
@@ -19,20 +18,17 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom';
+import {AppContext} from "./types/AppContext";
+import {AppContextVariant} from "./AppContext";
 
 function App(): ReactNode {
   const [listIsLoading, setListIsLoading]: [
     boolean,
     React.Dispatch<React.SetStateAction<boolean>>,
   ] = useState(false);
-  const [searchInputState, setSearchInputState]: [
-    string,
-    React.Dispatch<React.SetStateAction<string>>,
-  ] = useState('hello');
-  const [results, setResults]: [
-    Array<Result>,
-    React.Dispatch<React.SetStateAction<Array<Result>>>,
-  ] = useState<Array<Result>>([]);
+
+  const {searchString, setSearch, setResults} = useContext<AppContext>(AppContextVariant);
+
   const [mustThrowError, setMustThrowError]: [
     boolean,
     React.Dispatch<React.SetStateAction<boolean>>,
@@ -112,20 +108,23 @@ function App(): ReactNode {
         .replace(`count=${countString}`, `count=${count}`);
     }
   }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  async function doSearch(searchState: string): Promise<Array<Result>> {
-    let searchString = searchState.trim();
 
-    if (searchString.length === 0) {
-      searchString = searchInputState;
+
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  async function doSearch(): Promise<Array<Result>> {
+    let searchStringTrimmed = searchString.trim();
+
+    if (searchStringTrimmed.length === 0) {
+      searchStringTrimmed = searchString;
     }
 
-    setSearchInputState(searchString);
+    setSearch(searchStringTrimmed);
     setListIsLoading(true);
 
     const request: string =
       'https://openlibrary.org/search.json?q=' +
-      (searchString.length ? searchString : 'hello') +
+      (searchStringTrimmed.length ? searchStringTrimmed : 'hello') +
       '&page=' +
       page +
       '&limit=' +
@@ -143,7 +142,7 @@ function App(): ReactNode {
   useEffect((): void => {
     if (requireSearch) {
       setRequireSearch(false);
-      doSearch(DefaultLs_wrapper.getLastSearch());
+      doSearch();
     }
   }, [requireSearch, setRequireSearch, doSearch]);
 
@@ -169,18 +168,11 @@ function App(): ReactNode {
       <ErrorBoundary fallback={() => ErrorMessager()}>
         <ErrorThrower mustThrow={mustThrowError} />
         <SearchSection>
-          <SearchInput
-            state={searchInputState}
-            onStateChange={(newValue: string): void => {
-              setSearchInputState(newValue);
-              DefaultLs_wrapper.setLastSearch(newValue);
-            }}
-          />
-          <SearchButton onClick={() => doSearch(searchInputState)} />
+          <SearchInput />
+          <SearchButton onClick={() => doSearch()} />
         </SearchSection>
         <div className={'main'}>
           <ResultsSection
-            results={results}
             inLoadingNow={listIsLoading}
             onItemSelected={(result: Result) => showDetails(result.key)}
           />
