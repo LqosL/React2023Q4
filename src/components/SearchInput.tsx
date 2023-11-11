@@ -1,8 +1,8 @@
-import React, {ReactNode, useContext} from 'react';
-import {AppContextVariant} from "../AppContext";
+import React, { ReactNode, useContext } from 'react';
+import { AppContextVariant } from '../AppContext';
 
 export default function SearchInput(): ReactNode {
-  const { searchString, setSearch } = useContext(AppContextVariant)
+  const { searchString, setSearch } = useContext(AppContextVariant);
   return (
     <input
       type="text"
@@ -10,7 +10,7 @@ export default function SearchInput(): ReactNode {
       placeholder="Enter the book or the author..."
       value={searchString}
       onInput={(e: React.FormEvent<HTMLInputElement>) =>
-          setSearch(e.currentTarget.value)
+        setSearch(e.currentTarget.value)
       }
     ></input>
   );

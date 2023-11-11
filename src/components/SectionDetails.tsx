@@ -10,7 +10,9 @@ export default function DetailsSection({
   onClickOutside: () => void;
 }): ReactNode {
   const loadingDetails: ReactNode = isLoading ? (
-    <div className="loader details_loader">...LOADING DETAILS...</div>
+    <div role="details_loader" className="loader details_loader">
+      ...LOADING DETAILS...
+    </div>
   ) : (
     <></>
   );
@@ -18,7 +20,7 @@ export default function DetailsSection({
   function showDetails(details: Detail): ReactNode {
     if (Object.keys(details).length === 0) {
       return (
-        <div className="details_list empty_list">
+        <div role="details_list" className="details_list empty_list">
           We are terribly sorry, but nothing was found
         </div>
       );
@@ -29,7 +31,7 @@ export default function DetailsSection({
       ? 'https://openlibrary.org' + details.authors[0].author.key
       : undefined;
     return (
-      <div className="details_list">
+      <div role="details_list" className="details_list">
         <div className="details_unit">
           <span className="details_key"> Title: </span>
           <span className="detailsValue"> {details.title}</span>

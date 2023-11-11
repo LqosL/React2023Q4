@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext, useEffect, useState} from 'react';
+import React, { ReactNode, useContext, useEffect, useState } from 'react';
 import './App.css';
 import ResultsSection from './components/SectionResults';
 import SearchButton from './components/SearchButton';
@@ -18,8 +18,8 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom';
-import {AppContext} from "./types/AppContext";
-import {AppContextVariant} from "./AppContext";
+import { AppContext } from './types/AppContext';
+import { AppContextVariant } from './AppContext';
 
 function App(): ReactNode {
   const [listIsLoading, setListIsLoading]: [
@@ -27,7 +27,8 @@ function App(): ReactNode {
     React.Dispatch<React.SetStateAction<boolean>>,
   ] = useState(false);
 
-  const {searchString, setSearch, setResults} = useContext<AppContext>(AppContextVariant);
+  const { searchString, setSearch, setResults } =
+    useContext<AppContext>(AppContextVariant);
 
   const [mustThrowError, setMustThrowError]: [
     boolean,
@@ -108,8 +109,6 @@ function App(): ReactNode {
         .replace(`count=${countString}`, `count=${count}`);
     }
   }
-
-
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   async function doSearch(): Promise<Array<Result>> {
