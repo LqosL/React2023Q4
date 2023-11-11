@@ -5,6 +5,7 @@ import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import SectionDetailsContainer from './components/SectionDetailsContainer';
 import { Router as RemixRouter } from '@remix-run/router/dist/router';
+import NotFound from "./components/NotFound";
 
 const router: RemixRouter = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router: RemixRouter = createBrowserRouter([
       },
     ],
   },
+  {
+    path: '*',
+    element: <NotFound/>
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
