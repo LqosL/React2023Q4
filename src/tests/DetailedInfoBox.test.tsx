@@ -4,11 +4,7 @@ import DetailsSection from '../components/SectionDetails';
 import SectionDetailsContainer from "../components/SectionDetailsContainer";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { vi } from 'vitest';
 import React from "react";
-
-const mockedUsedNavigate = vi.fn();
-vi.mock('useNavigate()', () => mockedUsedNavigate )
 
 const details = {
     title: 'aaa',

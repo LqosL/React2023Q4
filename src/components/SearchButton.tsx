@@ -6,7 +6,7 @@ export default function SearchButton({
   onClick: () => void;
 }): ReactNode {
   return (
-    <button onClick={onClick} className="search_button">
+    <button role='search_button' onClick={onClick} className="search_button">
       SEARCH
     </button>
   );

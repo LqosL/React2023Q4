@@ -18,6 +18,7 @@ export default function PaginationWrapper({
     <div className="paginWrapper">
       <div>
         <button
+          role='prevBtn'
           id="prevBtn"
           className="paginBtn"
           onClick={() =>
@@ -31,6 +32,7 @@ export default function PaginationWrapper({
         </button>
         <span id="paginDisplay"> {currentPage} </span>
         <button
+          role='nextBtn'
           id="nextBtn"
           className="paginBtn"
           onClick={() =>

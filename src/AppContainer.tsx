@@ -15,14 +15,17 @@ export default function AppContainer(): ReactNode {
     React.Dispatch<React.SetStateAction<Array<Result>>>,
   ] = useState<Array<Result>>([]);
 
+  function proxySetSearch(search: string) {
+    DefaultLs_wrapper.setLastSearch(search);
+    setSearchInputState(search);
+  }
+
   const containerContext: AppContext = {
     searchString: searchInputState,
-    setSearch: setSearchInputState,
+    setSearch: proxySetSearch,
     results,
     setResults,
   };
-
-  DefaultLs_wrapper.setLastSearch(searchInputState);
 
   return (
     <AppContextVariant.Provider value={containerContext}>
