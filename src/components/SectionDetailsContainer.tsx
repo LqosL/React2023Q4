@@ -51,8 +51,12 @@ export default function SectionDetailsContainer(): ReactNode {
   }
 
   return (
-    <div role='details_section_container' className="details_section_container">
-      <button role='closeDetailsBtn' className="closeDetailsBtn" onClick={unsetSelectedSectionDetails}>
+    <div role="details_section_container" className="details_section_container">
+      <button
+        role="closeDetailsBtn"
+        className="closeDetailsBtn"
+        onClick={unsetSelectedSectionDetails}
+      >
         {' '}
         ❌{' '}
       </button>

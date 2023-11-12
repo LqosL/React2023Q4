@@ -17,7 +17,7 @@ describe('Card tests rendering', async () => {
     first_publish_year: '1111',
     key: 'aaa',
   };
-  it('Card component renders renders the relevant card data', async () => {
+  it('Card component renders the relevant card data', async () => {
     let clickHappen = false;
     render(
       <ResultsUnit

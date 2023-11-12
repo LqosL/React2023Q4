@@ -6,7 +6,7 @@ import { AppContext } from '../types/AppContext';
 
 describe('CardList tests', async () => {
   screen.debug();
-  it('Component renders the specified number of cards for empty list', async () => {
+  it('Check that an appropriate message is displayed if no cards are present', async () => {
     render(
       <ResultsSection inLoadingNow={false} onItemSelected={() => Object} />
     );

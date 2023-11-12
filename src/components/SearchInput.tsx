@@ -5,6 +5,7 @@ export default function SearchInput(): ReactNode {
   const { searchString, setSearch } = useContext(AppContextVariant);
   return (
     <input
+      role="search_input"
       type="text"
       className="search_input"
       placeholder="Enter the book or the author..."

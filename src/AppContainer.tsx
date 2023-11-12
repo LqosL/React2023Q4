@@ -9,7 +9,7 @@ export default function AppContainer(): ReactNode {
   const [searchInputState, setSearchInputState]: [
     string,
     React.Dispatch<React.SetStateAction<string>>,
-  ] = useState('hello');
+  ] = useState(DefaultLs_wrapper.getLastSearch());
   const [results, setResults]: [
     Array<Result>,
     React.Dispatch<React.SetStateAction<Array<Result>>>,
