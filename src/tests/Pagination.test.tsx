@@ -160,6 +160,26 @@ describe('Tests for the Pagination component', () => {
     expect(router.state.location.search).toContain('page=1');
   });
 
+  it('updates URL query parameter when page size changes.', async () => {
+    const router = createMemoryRouter(AppRouterConfig);
+    render(<RouterProvider router={router} />);
+
+    const searchButton = screen.getByRole('search_button');
+    await userEvent.click(searchButton);
+
+    const input = screen.getByRole('page_size_input');
+
+    await userEvent.click(input);
+    await userEvent.clear(input);
+    await userEvent.paste('10');
+    input.setAttribute('value', '10');
+
+    const submit = screen.getByRole('page_size_submit');
+    await userEvent.click(submit);
+
+    expect(router.state.location.search).toContain('count=10');
+  });
+
   afterAll(() => {
     mockFetch.dontMock();
   });

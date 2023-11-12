@@ -49,6 +49,7 @@ export default function PaginationWrapper({
         <label>
           Show by
           <input
+            role="page_size_input"
             type="number"
             min={5}
             max={15}
@@ -59,6 +60,7 @@ export default function PaginationWrapper({
             }
           />
           <button
+            role="page_size_submit"
             type={'submit'}
             onClick={() => changePagination('1', pageSize.toString())}
           >
