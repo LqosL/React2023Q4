@@ -22,15 +22,21 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { SearchStatePart, updateSearch } from './redux/searchSlice';
 import { ResultsStatePart, updateResults } from './redux/resultsSlice';
+import {
+  ItemsPerPageStatePart,
+  updateItemsPerPage,
+} from './redux/itemsPerPageSlice';
 
 function App(): ReactNode {
+  const dispatcher = useDispatch();
   const searchString = useSelector(
     (state: SearchStatePart) => state.search.search
   );
-  const dispatcher = useDispatch();
-
   const results = useSelector(
     (state: ResultsStatePart) => state.results.results
+  );
+  const itemsPerPage: string = useSelector(
+    (state: ItemsPerPageStatePart) => state.itemsPerPage.itemsPerPage
   );
 
   const [listIsLoading, setListIsLoading]: [
@@ -38,14 +44,10 @@ function App(): ReactNode {
     React.Dispatch<React.SetStateAction<boolean>>,
   ] = useState(false);
 
-  // const { searchString, setSearch, setResults } =
-  //   useContext<AppContext>(AppContextVariant);
-
   const [searchInputState, setSearchInputState]: [
     string,
     (value: ((prevState: string) => string) | string) => void,
   ] = useState(searchString);
-  // const [results, setResults]: [[], ((value: (((prevState: []) => []) | [])) => void)] = useState([]);
 
   const [mustThrowError, setMustThrowError]: [
     boolean,
@@ -72,6 +74,7 @@ function App(): ReactNode {
       params.set('count', pageSize);
       return params;
     });
+    dispatcher(updateItemsPerPage(pageSize));
     setRequireSearch(true);
   }
 
@@ -169,7 +172,7 @@ function App(): ReactNode {
   ) : (
     <PaginationWrapper
       currentPage={searchQueryParams.get('page') || '1'}
-      itemsPerPage={searchQueryParams.get('count') || '7'}
+      itemsPerPage={itemsPerPage}
       changePagination={changePagination}
     />
   );
