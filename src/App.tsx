@@ -27,6 +27,7 @@ import {
   updateItemsPerPage,
 } from './redux/itemsPerPageSlice';
 import { LoaderMainStatePart, updateLoaderMain } from './redux/loaderMainSlice';
+import { updateViewMode } from './redux/viewModeSlice';
 
 function App(): ReactNode {
   const dispatcher = useDispatch();
@@ -70,7 +71,6 @@ function App(): ReactNode {
   function changePagination(pageNum: string, pageSize: string): void {
     setSearchQueryParams((params) => {
       params.set('page', pageNum);
-      params.set('count', pageSize);
       return params;
     });
     dispatcher(updateItemsPerPage(pageSize));
@@ -101,51 +101,21 @@ function App(): ReactNode {
     }
   }
 
-  const countString = searchQueryParams.get('count');
-  let count = 7;
-  if (countString != null) {
-    let countIsCorrect = true;
-    count = parseInt(countString);
-    if (
-      count < 5 ||
-      isNaN(parseInt(countString)) ||
-      count.toString() !== countString
-    ) {
-      count = 5;
-      countIsCorrect = false;
-    }
-    if (count > 15) {
-      count = 15;
-      countIsCorrect = false;
-    }
-    if (!countIsCorrect) {
-      setSearchQueryParams((params) => {
-        params.set('count', count.toString());
-        return params;
-      });
-      window.location.href = window.location.href
-        .toString()
-        .replace(`count=${countString}`, `count=${count}`);
-    }
-  }
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   async function doSearch(): Promise<Array<Result>> {
     dispatcher(updateLoaderMain(true));
 
     let searchStringTrimmed = searchInputState.trim();
-
     if (searchStringTrimmed.length === 0) {
       searchStringTrimmed = searchInputState;
     }
-
     const request: string =
       'https://openlibrary.org/search.json?q=' +
-      (searchStringTrimmed.length ? searchStringTrimmed : 'hello') +
+      (searchStringTrimmed.length ? searchStringTrimmed : searchInputState) +
       '&page=' +
       page +
       '&limit=' +
-      count;
+      itemsPerPage;
     const response = await fetch(request)
       .then((res: Response) => res.json())
       .catch(() => {
@@ -170,7 +140,6 @@ function App(): ReactNode {
   ) : (
     <PaginationWrapper
       currentPage={searchQueryParams.get('page') || '1'}
-      itemsPerPage={itemsPerPage}
       changePagination={changePagination}
     />
   );
@@ -180,6 +149,7 @@ function App(): ReactNode {
 
   async function showDetails(key: string): Promise<void> {
     navigate({ pathname: key, search: location.search });
+    dispatcher(updateViewMode(true));
   }
 
   return (

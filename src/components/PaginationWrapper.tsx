@@ -1,18 +1,21 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  ItemsPerPageStatePart,
+  updateItemsPerPage,
+} from '../redux/itemsPerPageSlice';
 
 export default function PaginationWrapper({
-  itemsPerPage,
   currentPage,
   changePagination,
 }: {
-  itemsPerPage: string;
   currentPage: string;
   changePagination: (pageNum: string, pageSize: string) => void;
 }): ReactNode {
-  const [pageSize, setPageSize]: [
-    pageSize: string,
-    setPageSize: React.Dispatch<React.SetStateAction<string>>,
-  ] = useState(itemsPerPage);
+  const dispatcher = useDispatch();
+  const itemsPerPage: string = useSelector(
+    (state: ItemsPerPageStatePart) => state.itemsPerPage.itemsPerPage
+  );
 
   return (
     <div className="paginWrapper">
@@ -54,15 +57,15 @@ export default function PaginationWrapper({
             min={5}
             max={15}
             id="sizeInput"
-            defaultValue={pageSize}
+            defaultValue={itemsPerPage}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-              setPageSize(event.target.value)
+              dispatcher(updateItemsPerPage(event.target.value))
             }
           />
           <button
             role="page_size_submit"
             type={'submit'}
-            onClick={() => changePagination('1', pageSize.toString())}
+            onClick={() => changePagination('1', itemsPerPage)}
           >
             Apply
           </button>

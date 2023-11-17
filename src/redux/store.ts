@@ -5,6 +5,7 @@ import { itemsPerPageSliceReducer } from './itemsPerPageSlice';
 import { viewModeSliceReducer } from './viewModeSlice';
 import { loaderMainSliceReducer } from './loaderMainSlice';
 import { loaderDetailsSliceReducer } from './loaderDetailsSlice';
+// import { api } from "../utils/api";
 
 export const store = configureStore({
   reducer: {
@@ -15,4 +16,6 @@ export const store = configureStore({
     loaderMain: loaderMainSliceReducer,
     loaderDetails: loaderDetailsSliceReducer,
   },
+  // middleware: (getDefaultMiddleware) =>
+  //     getDefaultMiddleware().concat(api.middleware),
 });

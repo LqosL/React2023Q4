@@ -14,7 +14,7 @@ export type ViewModeAction = {
 const viewModeSlice = createSlice({
   name: 'viewMode',
   initialState: {
-    viewMode: false,
+    viewMode: location.pathname.startsWith('/works/'),
   },
   reducers: {
     updateViewMode: (state, action) => {

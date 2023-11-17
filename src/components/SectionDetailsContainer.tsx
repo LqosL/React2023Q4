@@ -14,10 +14,6 @@ import { updateLoaderDetails } from '../redux/loaderDetailsSlice';
 export default function SectionDetailsContainer(): ReactNode {
   const { key } = useParams<{ key: string }>();
 
-  const [shownDetail, setShownDetail]: [
-    Detail | undefined,
-    React.Dispatch<React.SetStateAction<Detail | undefined>>,
-  ] = useState<Detail | undefined>(undefined);
   const navigate: NavigateFunction = useNavigate();
   const location = useLocation();
   const [latestLoadedKey, setLatestLoadedKey] = useState<string | undefined>();
@@ -26,6 +22,11 @@ export default function SectionDetailsContainer(): ReactNode {
   const viewMode: boolean = useSelector(
     (state: ViewModeStatePart) => state.viewMode.viewMode
   );
+
+  const [shownDetail, setShownDetail]: [
+    Detail | undefined,
+    React.Dispatch<React.SetStateAction<Detail | undefined>>,
+  ] = useState<Detail | undefined>(undefined);
 
   if (!viewMode) return;
 
