@@ -1,29 +1,34 @@
-import {CaseReducerActions, createSlice} from "@reduxjs/toolkit";
-import {Result} from "../types/Result";
+import { CaseReducerActions, createSlice } from '@reduxjs/toolkit';
+import { Result } from '../types/Result';
 
 export type ResultsState = {
-    results: Result[],
-}
+  results: Result[];
+};
 export type ResultsStatePart = {
-    results: ResultsState
-}
+  results: ResultsState;
+};
 
 export type ResultsAction = {
-    payload: Result[]
-}
+  payload: Result[];
+};
 
 const resultsSlice = createSlice({
-    name: 'results',
-    initialState: {
-        results: [],
+  name: 'results',
+  initialState: {
+    results: [],
+  },
+  reducers: {
+    updateResults: (state, action) => {
+      state.results = action.payload;
     },
-    reducers: {
-        updateResults: (state, action) => {
-            state.results = action.payload
-        }
-    }
-})
+  },
+});
 
-export const { updateResults }: CaseReducerActions<{ updateResults: (state: ResultsState, action: ResultsAction) => void }, string> = resultsSlice.actions;
+export const {
+  updateResults,
+}: CaseReducerActions<
+  { updateResults: (state: ResultsState, action: ResultsAction) => void },
+  string
+> = resultsSlice.actions;
 
 export const resultsSliceReducer = resultsSlice.reducer;
