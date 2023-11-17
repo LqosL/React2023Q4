@@ -28,6 +28,7 @@ import {
 } from './redux/itemsPerPageSlice';
 import { LoaderMainStatePart, updateLoaderMain } from './redux/loaderMainSlice';
 import { updateViewMode } from './redux/viewModeSlice';
+import { useSearchQuery } from './utils/api';
 
 function App(): ReactNode {
   const dispatcher = useDispatch();
@@ -53,10 +54,6 @@ function App(): ReactNode {
     boolean,
     React.Dispatch<React.SetStateAction<boolean>>,
   ] = useState(false);
-  const [requireSearch, setRequireSearch]: [
-    requireSearch: boolean,
-    setRequireSearch: React.Dispatch<React.SetStateAction<boolean>>,
-  ] = useState(true);
 
   const [searchQueryParams, setSearchQueryParams]: [
     URLSearchParams,
@@ -74,7 +71,6 @@ function App(): ReactNode {
       return params;
     });
     dispatcher(updateItemsPerPage(pageSize));
-    setRequireSearch(true);
   }
 
   const pageString = searchQueryParams.get('page');
@@ -101,39 +97,22 @@ function App(): ReactNode {
     }
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  async function doSearch(): Promise<Array<Result>> {
-    dispatcher(updateLoaderMain(true));
+  const itemsRequest = useSearchQuery({
+    query: searchString,
+    page,
+    count: parseInt(itemsPerPage),
+  });
 
-    let searchStringTrimmed = searchInputState.trim();
-    if (searchStringTrimmed.length === 0) {
-      searchStringTrimmed = searchInputState;
-    }
-    const request: string =
-      'https://openlibrary.org/search.json?q=' +
-      (searchStringTrimmed.length ? searchStringTrimmed : searchInputState) +
-      '&page=' +
-      page +
-      '&limit=' +
-      itemsPerPage;
-    const response = await fetch(request)
-      .then((res: Response) => res.json())
-      .catch(() => {
-        return undefined;
-      });
+  useEffect(() => {
+    const requestIsLoading = itemsRequest.isLoading || itemsRequest.isFetching;
 
-    dispatcher(updateResults(response['docs'] || []));
+    dispatcher(updateLoaderMain(requestIsLoading));
+
+    if (requestIsLoading || itemsRequest.data == null) return;
+
+    dispatcher(updateResults(itemsRequest.data['docs'] || []));
     dispatcher(updateLoaderMain(false));
-
-    return response['docs'] || [];
-  }
-
-  useEffect((): void => {
-    if (requireSearch) {
-      setRequireSearch(false);
-      doSearch();
-    }
-  }, [requireSearch, setRequireSearch, doSearch]);
+  }, [dispatcher, itemsRequest]);
 
   const loadingContent: ReactNode = loaderMain ? (
     <div className="loader">...LOADING LIST...</div>
@@ -164,7 +143,6 @@ function App(): ReactNode {
           <SearchButton
             onClick={() => {
               dispatcher(updateSearch({ text: searchInputState }));
-              doSearch();
             }}
           />
         </SearchSection>

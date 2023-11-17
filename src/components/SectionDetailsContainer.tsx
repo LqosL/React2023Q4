@@ -4,19 +4,19 @@ import {
   useNavigate,
   useParams,
 } from 'react-router-dom';
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { Detail } from '../types/Detail';
 import DetailsSection from './SectionDetails';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateViewMode, ViewModeStatePart } from '../redux/viewModeSlice';
 import { updateLoaderDetails } from '../redux/loaderDetailsSlice';
+import { useDetailsQuery } from '../utils/api';
 
 export default function SectionDetailsContainer(): ReactNode {
   const { key } = useParams<{ key: string }>();
 
   const navigate: NavigateFunction = useNavigate();
   const location = useLocation();
-  const [latestLoadedKey, setLatestLoadedKey] = useState<string | undefined>();
 
   const dispatcher = useDispatch();
   const viewMode: boolean = useSelector(
@@ -27,34 +27,28 @@ export default function SectionDetailsContainer(): ReactNode {
     Detail | undefined,
     React.Dispatch<React.SetStateAction<Detail | undefined>>,
   ] = useState<Detail | undefined>(undefined);
+  const detailsRequest = useDetailsQuery(
+    { key: key !== undefined ? key : '' },
+    { skip: key === undefined }
+  );
+
+  useEffect(() => {
+    const requestIsLoading =
+      detailsRequest.isLoading || detailsRequest.isFetching;
+
+    dispatcher(updateLoaderDetails(requestIsLoading));
+
+    if (requestIsLoading || detailsRequest.data == null) return;
+
+    setShownDetail(detailsRequest.data);
+    dispatcher(updateLoaderDetails(false));
+  }, [dispatcher, detailsRequest]);
 
   if (!viewMode) return;
-
-  async function loadDetails(key: string): Promise<void> {
-    setShownDetail(undefined);
-    dispatcher(updateLoaderDetails(true));
-
-    const request: string = 'https://openlibrary.org/works/' + key + '.json';
-    const response: Detail | undefined = await fetch(request)
-      .then((res: Response) => res.json())
-      .catch(() => {
-        return undefined;
-      });
-
-    setShownDetail(response);
-    dispatcher(updateLoaderDetails(false));
-  }
 
   function unsetSelectedSectionDetails() {
     setShownDetail(undefined);
     navigate({ pathname: '/', search: location.search });
-  }
-
-  if (latestLoadedKey != key) {
-    setLatestLoadedKey(key);
-    if (key) {
-      loadDetails(key);
-    }
   }
 
   return (
