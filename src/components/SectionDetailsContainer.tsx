@@ -13,10 +13,6 @@ import { updateLoaderDetails } from '../redux/loaderDetailsSlice';
 
 export default function SectionDetailsContainer(): ReactNode {
   const { key } = useParams<{ key: string }>();
-  // const [detailsIsLoading, setDetailsIsLoading]: [
-  //   boolean,
-  //   React.Dispatch<React.SetStateAction<boolean>>,
-  // ] = useState(false);
 
   const [shownDetail, setShownDetail]: [
     Detail | undefined,
@@ -35,7 +31,6 @@ export default function SectionDetailsContainer(): ReactNode {
 
   async function loadDetails(key: string): Promise<void> {
     setShownDetail(undefined);
-    // setDetailsIsLoading(true);
     dispatcher(updateLoaderDetails(true));
 
     const request: string = 'https://openlibrary.org/works/' + key + '.json';
@@ -47,7 +42,6 @@ export default function SectionDetailsContainer(): ReactNode {
 
     setShownDetail(response);
     dispatcher(updateLoaderDetails(false));
-    // setDetailsIsLoading(false);
   }
 
   function unsetSelectedSectionDetails() {

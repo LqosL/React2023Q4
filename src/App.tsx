@@ -26,7 +26,7 @@ import {
   ItemsPerPageStatePart,
   updateItemsPerPage,
 } from './redux/itemsPerPageSlice';
-import { LoaderMainStatePart, updateLoaderMain } from './redux/loaderMain';
+import { LoaderMainStatePart, updateLoaderMain } from './redux/loaderMainSlice';
 
 function App(): ReactNode {
   const dispatcher = useDispatch();
@@ -42,11 +42,6 @@ function App(): ReactNode {
   const loaderMain: boolean = useSelector(
     (state: LoaderMainStatePart) => state.loaderMain.loaderMain
   );
-
-  // const [listIsLoading, setListIsLoading]: [
-  //   boolean,
-  //   React.Dispatch<React.SetStateAction<boolean>>,
-  // ] = useState(false);
 
   const [searchInputState, setSearchInputState]: [
     string,
@@ -144,9 +139,6 @@ function App(): ReactNode {
       searchStringTrimmed = searchInputState;
     }
 
-    // setSearch(searchStringTrimmed);
-    // setListIsLoading(true);
-
     const request: string =
       'https://openlibrary.org/search.json?q=' +
       (searchStringTrimmed.length ? searchStringTrimmed : 'hello') +
@@ -159,8 +151,7 @@ function App(): ReactNode {
       .catch(() => {
         return undefined;
       });
-    // setResults(response['docs'] || []);
-    // setListIsLoading(false);
+
     dispatcher(updateResults(response['docs'] || []));
     dispatcher(updateLoaderMain(false));
 
@@ -188,7 +179,6 @@ function App(): ReactNode {
   const location = useLocation();
 
   async function showDetails(key: string): Promise<void> {
-    // dispatcher(updateViewMode(true));
     navigate({ pathname: key, search: location.search });
   }
 

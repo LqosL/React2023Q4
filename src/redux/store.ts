@@ -3,7 +3,7 @@ import { searchSliceReducer } from './searchSlice';
 import { resultsSliceReducer } from './resultsSlice';
 import { itemsPerPageSliceReducer } from './itemsPerPageSlice';
 import { viewModeSliceReducer } from './viewModeSlice';
-import { loaderMainSliceReducer } from './loaderMain';
+import { loaderMainSliceReducer } from './loaderMainSlice';
 import { loaderDetailsSliceReducer } from './loaderDetailsSlice';
 
 export const store = configureStore({

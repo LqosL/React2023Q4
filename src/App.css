@@ -106,15 +106,8 @@ li {
 }
 .details_list,
 .details_loader {
-  background:
-    linear-gradient(
-      7deg,
-      rgba(108, 92, 60, 0.2) 0%,
-      rgba(217, 214, 214, 0.5) 60%
-    ),
-    url('assets/book.png') no-repeat center;
-  background-size: contain;
-  min-height: 50vh;
+  transition-duration: .3s;
+  min-height: 55vh;
   min-width: 45vh;
   border-radius: 50%;
   display: flex;
@@ -140,6 +133,18 @@ li {
   display: flex;
   flex-direction: column;
   min-width: 40%;
+  background:
+          linear-gradient(
+                  7deg,
+                  rgba(108, 92, 60, 0.2) 0%,
+                  rgba(217, 214, 214, 0.5) 60%
+          ),
+          url('assets/book.png') no-repeat center;
+  background-size: contain;
+  border-radius: 50%;
+  min-height: 55vh;
+  height: fit-content;
+  transition-duration: .3s;
 }
 .closeDetailsBtn {
   align-self: flex-end;

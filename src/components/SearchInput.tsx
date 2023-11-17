@@ -7,7 +7,6 @@ export default function SearchInput({
   searchInputState: string;
   setSearchInputState: (newString: string) => void;
 }): ReactNode {
-  // const { searchString, setSearch } = useContext(AppContextVariant);
   return (
     <input
       role="search_input"
