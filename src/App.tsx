@@ -18,17 +18,16 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  SearchStatePart,
-  updateSearch,
-} from './redux/searchSlice';
+import {useDispatch, useSelector} from "react-redux";
+
+import { SearchStatePart, updateSearch} from "./redux/searchSlice";
+import {ResultsStatePart, updateResults} from "./redux/resultsSlice";
 
 function App(): ReactNode {
-  const searchString = useSelector(
-    (state: SearchStatePart) => state.search.search
-  );
+  const searchString = useSelector((state: SearchStatePart) => state.search.search)
   const dispatcher = useDispatch();
+
+  const results = useSelector((state: ResultsStatePart) => state.results.results)
 
   const [listIsLoading, setListIsLoading]: [
     boolean,
@@ -38,10 +37,10 @@ function App(): ReactNode {
   // const { searchString, setSearch, setResults } =
   //   useContext<AppContext>(AppContextVariant);
 
-  const [searchInputState, setSearchInputState]: [
-    string,
-    (value: ((prevState: string) => string) | string) => void,
-  ] = useState(searchString);
+  const [searchInputState, setSearchInputState]: [string, ((value: (((prevState: string) => string) | string)) => void)] = useState(searchString);
+  // const [results, setResults]: [[], ((value: (((prevState: []) => []) | [])) => void)] = useState([]);
+
+
 
   const [mustThrowError, setMustThrowError]: [
     boolean,
@@ -147,7 +146,9 @@ function App(): ReactNode {
         return undefined;
       });
     // setResults(response['docs'] || []);
+
     setListIsLoading(false);
+    dispatcher(updateResults(response['docs'] || []));
     return response['docs'] || [];
   }
 
@@ -180,19 +181,15 @@ function App(): ReactNode {
       <ErrorBoundary fallback={() => ErrorMessager()}>
         <ErrorThrower mustThrow={mustThrowError} />
         <SearchSection>
-          <SearchInput
-            searchInputState={searchInputState}
-            setSearchInputState={setSearchInputState}
-          />
-          <SearchButton
-            onClick={() => {
-              dispatcher(updateSearch({ text: searchInputState }));
-              doSearch();
-            }}
-          />
+          <SearchInput searchInputState={searchInputState} setSearchInputState={setSearchInputState}/>
+          <SearchButton onClick={() => {
+            dispatcher(updateSearch({text: searchInputState}));
+            doSearch();
+          }} />
         </SearchSection>
         <div className={'main'}>
           <ResultsSection
+            results={results}
             inLoadingNow={listIsLoading}
             onItemSelected={(result: Result) => showDetails(result.key)}
           />
