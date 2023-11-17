@@ -4,6 +4,8 @@ import { AppContextVariant } from './AppContext';
 import { AppContext } from './types/AppContext';
 import App from './App';
 import { DefaultLs_wrapper } from './components/ls_wrapper';
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
 
 export default function AppContainer(): ReactNode {
   const [searchInputState, setSearchInputState]: [
@@ -28,8 +30,10 @@ export default function AppContainer(): ReactNode {
   };
 
   return (
-    <AppContextVariant.Provider value={containerContext}>
-      <App />
-    </AppContextVariant.Provider>
+    <Provider store={store}>
+      <AppContextVariant.Provider value={containerContext}>
+        <App />
+      </AppContextVariant.Provider>
+    </Provider>
   );
 }

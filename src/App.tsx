@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import './App.css';
 import ResultsSection from './components/SectionResults';
 import SearchButton from './components/SearchButton';
@@ -18,17 +18,30 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom';
-import { AppContext } from './types/AppContext';
-import { AppContextVariant } from './AppContext';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  SearchStatePart,
+  updateSearch,
+} from './redux/searchSlice';
 
 function App(): ReactNode {
+  const searchString = useSelector(
+    (state: SearchStatePart) => state.search.search
+  );
+  const dispatcher = useDispatch();
+
   const [listIsLoading, setListIsLoading]: [
     boolean,
     React.Dispatch<React.SetStateAction<boolean>>,
   ] = useState(false);
 
-  const { searchString, setSearch, setResults } =
-    useContext<AppContext>(AppContextVariant);
+  // const { searchString, setSearch, setResults } =
+  //   useContext<AppContext>(AppContextVariant);
+
+  const [searchInputState, setSearchInputState]: [
+    string,
+    (value: ((prevState: string) => string) | string) => void,
+  ] = useState(searchString);
 
   const [mustThrowError, setMustThrowError]: [
     boolean,
@@ -112,13 +125,13 @@ function App(): ReactNode {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   async function doSearch(): Promise<Array<Result>> {
-    let searchStringTrimmed = searchString.trim();
+    let searchStringTrimmed = searchInputState.trim();
 
     if (searchStringTrimmed.length === 0) {
-      searchStringTrimmed = searchString;
+      searchStringTrimmed = searchInputState;
     }
 
-    setSearch(searchStringTrimmed);
+    // setSearch(searchStringTrimmed);
     setListIsLoading(true);
 
     const request: string =
@@ -133,7 +146,7 @@ function App(): ReactNode {
       .catch(() => {
         return undefined;
       });
-    setResults(response['docs'] || []);
+    // setResults(response['docs'] || []);
     setListIsLoading(false);
     return response['docs'] || [];
   }
@@ -167,8 +180,16 @@ function App(): ReactNode {
       <ErrorBoundary fallback={() => ErrorMessager()}>
         <ErrorThrower mustThrow={mustThrowError} />
         <SearchSection>
-          <SearchInput />
-          <SearchButton onClick={() => doSearch()} />
+          <SearchInput
+            searchInputState={searchInputState}
+            setSearchInputState={setSearchInputState}
+          />
+          <SearchButton
+            onClick={() => {
+              dispatcher(updateSearch({ text: searchInputState }));
+              doSearch();
+            }}
+          />
         </SearchSection>
         <div className={'main'}>
           <ResultsSection
