@@ -1,5 +1,8 @@
 import React, { ReactNode } from 'react';
 import { Detail } from '../types/Detail';
+import { useDispatch } from "react-redux";
+import { updateViewMode } from "../redux/viewModeSlice";
+
 
 export default function DetailsSection({
   isLoading,
@@ -17,7 +20,10 @@ export default function DetailsSection({
     <></>
   );
 
+    const dispatcher = useDispatch();
+
   function showDetails(details: Detail): ReactNode {
+    dispatcher(updateViewMode(true));
     if (Object.keys(details).length === 0) {
       return (
         <div role="details_list" className="details_list empty_list">

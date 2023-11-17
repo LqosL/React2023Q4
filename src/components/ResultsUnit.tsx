@@ -1,5 +1,7 @@
 import { Result } from '../types/Result';
 import React, { ReactNode } from 'react';
+import { useDispatch } from "react-redux";
+import { updateViewMode } from "../redux/viewModeSlice";
 
 export function ResultsUnit({
   title,
@@ -8,6 +10,8 @@ export function ResultsUnit({
   key,
   onClick,
 }: Result & { onClick: () => void }): ReactNode {
+
+  const dispatcher = useDispatch();
   const resultOnClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onClick();
@@ -16,7 +20,10 @@ export function ResultsUnit({
     <li
       role={'results_unit'}
       className="results_unit"
-      onClick={resultOnClick}
+      onClick={(e) => {
+        dispatcher(updateViewMode(true))
+        resultOnClick(e);
+      }}
       key={key}
     >
       <span className="info results_title">{title}</span>

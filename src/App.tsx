@@ -39,6 +39,7 @@ function App(): ReactNode {
     (state: ItemsPerPageStatePart) => state.itemsPerPage.itemsPerPage
   );
 
+
   const [listIsLoading, setListIsLoading]: [
     boolean,
     React.Dispatch<React.SetStateAction<boolean>>,
@@ -181,6 +182,7 @@ function App(): ReactNode {
   const location = useLocation();
 
   async function showDetails(key: string): Promise<void> {
+    // dispatcher(updateViewMode(true));
     navigate({ pathname: key, search: location.search });
   }
 

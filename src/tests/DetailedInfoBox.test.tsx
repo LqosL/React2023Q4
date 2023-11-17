@@ -5,6 +5,9 @@ import SectionDetailsContainer from '../components/SectionDetailsContainer';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import React from 'react';
+import { Provider } from "react-redux";
+import {store} from "../redux/store";
+import {updateViewMode} from "../redux/viewModeSlice";
 
 const details = {
   title: 'aaa',
@@ -19,11 +22,13 @@ describe('Loading indicator is displayed while fetching data', () => {
   it('Shows loading indicator', async () => {
     screen.debug();
     render(
-      <DetailsSection
-        isLoading={true}
-        details={details}
-        onClickOutside={() => {}}
-      />
+        <Provider store={store}>
+          <DetailsSection
+            isLoading={true}
+            details={details}
+            onClickOutside={() => {}}
+          />
+        </Provider>
     );
 
     await screen.findByRole('details_loader');
@@ -37,11 +42,13 @@ describe('It correctly displays the detailed card data', () => {
   it('displays the detailed card data', async () => {
     screen.debug();
     render(
-      <DetailsSection
-        isLoading={false}
-        details={details}
-        onClickOutside={() => {}}
-      />
+        <Provider store={store}>
+          <DetailsSection
+            isLoading={false}
+            details={details}
+            onClickOutside={() => {}}
+          />
+        </Provider>
     );
 
     await screen.findByRole('details_list');
@@ -65,16 +72,19 @@ describe('Clicking the close button hides the component', () => {
   afterEach(() => cleanup());
   it('Hides the component', async () => {
     screen.debug();
+    store.dispatch(updateViewMode(true));
     render(
-      <MemoryRouter initialEntries={['/test']}>
-        <Routes>
-          <Route path={'/'} element={<></>}></Route>
-          <Route
-            path={'/test'}
-            element={<SectionDetailsContainer key={details.key} />}
-          ></Route>
-        </Routes>
-      </MemoryRouter>
+        <Provider store={store} >
+          <MemoryRouter initialEntries={['/test']}>
+            <Routes>
+              <Route path={'/'} element={<></>}></Route>
+              <Route
+                path={'/test'}
+                element={<SectionDetailsContainer key={details.key} />}
+              ></Route>
+            </Routes>
+          </MemoryRouter>
+        </Provider>
     );
     expect(await screen.findByRole('details_section_container')).toBeTruthy();
 

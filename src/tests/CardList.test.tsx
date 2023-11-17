@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import ResultsSection from '../components/SectionResults';
-import { AppContextVariant } from '../AppContext';
-import { AppContext } from '../types/AppContext';
+import {Provider} from "react-redux";
+import {store} from "../redux/store";
 
 describe('CardList tests', async () => {
   screen.debug();
@@ -65,22 +65,15 @@ describe('CardList tests', async () => {
     },
   ];
 
-  const containerContext: AppContext = {
-    searchString: 'hello',
-    setSearch: () => {},
-    results: results,
-    setResults: () => {},
-  };
-
   it('Component renders the specified number of cards for results list', async () => {
     render(
-      <AppContextVariant.Provider value={containerContext}>
+      <Provider store={store}>
         <ResultsSection
           results={results}
           inLoadingNow={false}
           onItemSelected={() => Object}
         />
-      </AppContextVariant.Provider>
+      </Provider>
     );
     await screen.findByRole('ResultsList');
     const a = screen.getByRole('ResultsList');

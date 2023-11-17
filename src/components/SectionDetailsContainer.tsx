@@ -7,6 +7,8 @@ import {
 import React, { ReactNode, useState } from 'react';
 import { Detail } from '../types/Detail';
 import DetailsSection from './SectionDetails';
+import {useDispatch, useSelector} from "react-redux";
+import {updateViewMode, ViewModeStatePart} from "../redux/viewModeSlice";
 
 export default function SectionDetailsContainer(): ReactNode {
   const { key } = useParams<{ key: string }>();
@@ -22,6 +24,11 @@ export default function SectionDetailsContainer(): ReactNode {
   const navigate: NavigateFunction = useNavigate();
   const location = useLocation();
   const [latestLoadedKey, setLatestLoadedKey] = useState<string | undefined>();
+
+  const dispatcher = useDispatch();
+  const viewMode: boolean = useSelector((state: ViewModeStatePart) => state.viewMode.viewMode);
+
+  if (!viewMode) return;
 
   async function loadDetails(key: string): Promise<void> {
     setShownDetail(undefined);
@@ -55,7 +62,11 @@ export default function SectionDetailsContainer(): ReactNode {
       <button
         role="closeDetailsBtn"
         className="closeDetailsBtn"
-        onClick={unsetSelectedSectionDetails}
+        onClick={ () => {
+          dispatcher(updateViewMode(false)),
+          unsetSelectedSectionDetails()
+        }
+      }
       >
         {' '}
         ❌{' '}
@@ -63,7 +74,9 @@ export default function SectionDetailsContainer(): ReactNode {
       <DetailsSection
         details={shownDetail}
         isLoading={detailsIsLoading}
-        onClickOutside={unsetSelectedSectionDetails}
+        onClickOutside={
+        unsetSelectedSectionDetails
+      }
       />
     </div>
   );
