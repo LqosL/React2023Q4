@@ -8,6 +8,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { store } from '../redux/store';
 import { updateViewMode } from '../redux/viewModeSlice';
+import { updateLoaderDetails } from '../redux/loaderDetailsSlice';
 
 const details = {
   title: 'aaa',
@@ -21,13 +22,10 @@ describe('Loading indicator is displayed while fetching data', () => {
   afterEach(() => cleanup());
   it('Shows loading indicator', async () => {
     screen.debug();
+    store.dispatch(updateLoaderDetails(true));
     render(
       <Provider store={store}>
-        <DetailsSection
-          isLoading={true}
-          details={details}
-          onClickOutside={() => {}}
-        />
+        <DetailsSection details={details} onClickOutside={() => {}} />
       </Provider>
     );
 
@@ -43,11 +41,7 @@ describe('It correctly displays the detailed card data', () => {
     screen.debug();
     render(
       <Provider store={store}>
-        <DetailsSection
-          isLoading={false}
-          details={details}
-          onClickOutside={() => {}}
-        />
+        <DetailsSection details={details} onClickOutside={() => {}} />
       </Provider>
     );
 

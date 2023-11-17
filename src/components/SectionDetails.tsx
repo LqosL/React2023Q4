@@ -1,17 +1,19 @@
 import React, { ReactNode } from 'react';
 import { Detail } from '../types/Detail';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updateViewMode } from '../redux/viewModeSlice';
+import { LoaderDetailsStatePart } from '../redux/loaderDetailsSlice';
 
 export default function DetailsSection({
-  isLoading,
   details,
 }: {
-  isLoading: boolean;
   details?: Detail;
   onClickOutside: () => void;
 }): ReactNode {
-  const loadingDetails: ReactNode = isLoading ? (
+  const loaderDetails: boolean = useSelector(
+    (state: LoaderDetailsStatePart) => state.loaderDetails.loaderDetails
+  );
+  const loadingDetails: ReactNode = loaderDetails ? (
     <div role="details_loader" className="loader details_loader">
       ...LOADING DETAILS...
     </div>

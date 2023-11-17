@@ -4,6 +4,7 @@ import { resultsSliceReducer } from './resultsSlice';
 import { itemsPerPageSliceReducer } from './itemsPerPageSlice';
 import { viewModeSliceReducer } from './viewModeSlice';
 import { loaderMainSliceReducer } from './loaderMain';
+import { loaderDetailsSliceReducer } from './loaderDetailsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     itemsPerPage: itemsPerPageSliceReducer,
     viewMode: viewModeSliceReducer,
     loaderMain: loaderMainSliceReducer,
+    loaderDetails: loaderDetailsSliceReducer,
   },
 });

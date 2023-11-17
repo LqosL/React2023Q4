@@ -9,13 +9,14 @@ import { Detail } from '../types/Detail';
 import DetailsSection from './SectionDetails';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateViewMode, ViewModeStatePart } from '../redux/viewModeSlice';
+import { updateLoaderDetails } from '../redux/loaderDetailsSlice';
 
 export default function SectionDetailsContainer(): ReactNode {
   const { key } = useParams<{ key: string }>();
-  const [detailsIsLoading, setDetailsIsLoading]: [
-    boolean,
-    React.Dispatch<React.SetStateAction<boolean>>,
-  ] = useState(false);
+  // const [detailsIsLoading, setDetailsIsLoading]: [
+  //   boolean,
+  //   React.Dispatch<React.SetStateAction<boolean>>,
+  // ] = useState(false);
 
   const [shownDetail, setShownDetail]: [
     Detail | undefined,
@@ -34,7 +35,8 @@ export default function SectionDetailsContainer(): ReactNode {
 
   async function loadDetails(key: string): Promise<void> {
     setShownDetail(undefined);
-    setDetailsIsLoading(true);
+    // setDetailsIsLoading(true);
+    dispatcher(updateLoaderDetails(true));
 
     const request: string = 'https://openlibrary.org/works/' + key + '.json';
     const response: Detail | undefined = await fetch(request)
@@ -44,7 +46,8 @@ export default function SectionDetailsContainer(): ReactNode {
       });
 
     setShownDetail(response);
-    setDetailsIsLoading(false);
+    dispatcher(updateLoaderDetails(false));
+    // setDetailsIsLoading(false);
   }
 
   function unsetSelectedSectionDetails() {
@@ -73,7 +76,6 @@ export default function SectionDetailsContainer(): ReactNode {
       </button>
       <DetailsSection
         details={shownDetail}
-        isLoading={detailsIsLoading}
         onClickOutside={unsetSelectedSectionDetails}
       />
     </div>
