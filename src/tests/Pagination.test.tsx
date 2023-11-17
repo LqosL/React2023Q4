@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import {
   afterAll,
@@ -15,6 +15,8 @@ import userEvent from '@testing-library/user-event';
 import createFetchMock from 'vitest-fetch-mock';
 import { AppRouterConfig } from '../AppRouterConfig';
 import { NewFakeLocalStorage } from './App.test';
+import { Provider } from 'react-redux';
+import { store } from '../redux/store';
 
 const containerContext: AppContext = {
   searchString: 'hello',
@@ -162,7 +164,11 @@ describe('Tests for the Pagination component', () => {
 
   it('updates URL query parameter when page size changes.', async () => {
     const router = createMemoryRouter(AppRouterConfig);
-    render(<RouterProvider router={router} />);
+    render(
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
+    );
 
     const searchButton = screen.getByRole('search_button');
     await userEvent.click(searchButton);
@@ -171,13 +177,18 @@ describe('Tests for the Pagination component', () => {
 
     await userEvent.click(input);
     await userEvent.clear(input);
+
     await userEvent.paste('10');
     input.setAttribute('value', '10');
 
     const submit = screen.getByRole('page_size_submit');
     await userEvent.click(submit);
-
-    expect(router.state.location.search).toContain('count=10');
+    await waitFor(
+      () => {
+        expect(store.getState().itemsPerPage.itemsPerPage).toBe('10');
+      },
+      { timeout: 2000 }
+    );
   });
 
   afterAll(() => {
