@@ -26,6 +26,7 @@ import {
   ItemsPerPageStatePart,
   updateItemsPerPage,
 } from './redux/itemsPerPageSlice';
+import { LoaderMainStatePart, updateLoaderMain } from './redux/loaderMain';
 
 function App(): ReactNode {
   const dispatcher = useDispatch();
@@ -38,12 +39,14 @@ function App(): ReactNode {
   const itemsPerPage: string = useSelector(
     (state: ItemsPerPageStatePart) => state.itemsPerPage.itemsPerPage
   );
+  const loaderMain: boolean = useSelector(
+    (state: LoaderMainStatePart) => state.loaderMain.loaderMain
+  );
 
-
-  const [listIsLoading, setListIsLoading]: [
-    boolean,
-    React.Dispatch<React.SetStateAction<boolean>>,
-  ] = useState(false);
+  // const [listIsLoading, setListIsLoading]: [
+  //   boolean,
+  //   React.Dispatch<React.SetStateAction<boolean>>,
+  // ] = useState(false);
 
   const [searchInputState, setSearchInputState]: [
     string,
@@ -133,6 +136,8 @@ function App(): ReactNode {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   async function doSearch(): Promise<Array<Result>> {
+    dispatcher(updateLoaderMain(true));
+
     let searchStringTrimmed = searchInputState.trim();
 
     if (searchStringTrimmed.length === 0) {
@@ -140,7 +145,7 @@ function App(): ReactNode {
     }
 
     // setSearch(searchStringTrimmed);
-    setListIsLoading(true);
+    // setListIsLoading(true);
 
     const request: string =
       'https://openlibrary.org/search.json?q=' +
@@ -155,9 +160,10 @@ function App(): ReactNode {
         return undefined;
       });
     // setResults(response['docs'] || []);
-
-    setListIsLoading(false);
+    // setListIsLoading(false);
     dispatcher(updateResults(response['docs'] || []));
+    dispatcher(updateLoaderMain(false));
+
     return response['docs'] || [];
   }
 
@@ -168,7 +174,7 @@ function App(): ReactNode {
     }
   }, [requireSearch, setRequireSearch, doSearch]);
 
-  const loadingContent: ReactNode = listIsLoading ? (
+  const loadingContent: ReactNode = loaderMain ? (
     <div className="loader">...LOADING LIST...</div>
   ) : (
     <PaginationWrapper
@@ -205,7 +211,7 @@ function App(): ReactNode {
         <div className={'main'}>
           <ResultsSection
             results={results}
-            inLoadingNow={listIsLoading}
+            inLoadingNow={loaderMain}
             onItemSelected={(result: Result) => showDetails(result.key)}
           />
           <Outlet />

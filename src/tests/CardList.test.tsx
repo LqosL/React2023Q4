@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import ResultsSection from '../components/SectionResults';
-import {Provider} from "react-redux";
-import {store} from "../redux/store";
+import { Provider } from 'react-redux';
+import { store } from '../redux/store';
 
 describe('CardList tests', async () => {
   screen.debug();

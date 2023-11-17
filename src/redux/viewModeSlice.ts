@@ -1,33 +1,33 @@
 import { CaseReducerActions, createSlice } from '@reduxjs/toolkit';
 
 export type ViewModeState = {
-    viewMode: boolean;
+  viewMode: boolean;
 };
 export type ViewModeStatePart = {
-    viewMode: ViewModeState;
+  viewMode: ViewModeState;
 };
 
 export type ViewModeAction = {
-    payload: boolean;
+  payload: boolean;
 };
 
 const viewModeSlice = createSlice({
-    name: 'viewMode',
-    initialState: {
-        viewMode: false,
+  name: 'viewMode',
+  initialState: {
+    viewMode: false,
+  },
+  reducers: {
+    updateViewMode: (state, action) => {
+      state.viewMode = action.payload;
     },
-    reducers: {
-        updateViewMode: (state, action) => {
-            state.viewMode = action.payload;
-        },
-    },
+  },
 });
 
 export const {
-    updateViewMode,
+  updateViewMode,
 }: CaseReducerActions<
-    { updateViewMode: (state: ViewModeState, action: ViewModeAction) => void },
-    string
+  { updateViewMode: (state: ViewModeState, action: ViewModeAction) => void },
+  string
 > = viewModeSlice.actions;
 
 export const viewModeSliceReducer = viewModeSlice.reducer;

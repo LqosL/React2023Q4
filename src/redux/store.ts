@@ -2,7 +2,8 @@ import { configureStore } from '@reduxjs/toolkit';
 import { searchSliceReducer } from './searchSlice';
 import { resultsSliceReducer } from './resultsSlice';
 import { itemsPerPageSliceReducer } from './itemsPerPageSlice';
-import {viewModeSliceReducer} from "./viewModeSlice";
+import { viewModeSliceReducer } from './viewModeSlice';
+import { loaderMainSliceReducer } from './loaderMain';
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     results: resultsSliceReducer,
     itemsPerPage: itemsPerPageSliceReducer,
     viewMode: viewModeSliceReducer,
+    loaderMain: loaderMainSliceReducer,
   },
 });
