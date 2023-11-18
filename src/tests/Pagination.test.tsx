@@ -191,6 +191,22 @@ describe('Tests for the Pagination component', () => {
     );
   });
 
+  it('Checks page number before applying', async () => {
+    screen.debug();
+
+    const router = createMemoryRouter(AppRouterConfig);
+    render(<RouterProvider router={router} />);
+
+    const searchButton = screen.getByRole('search_button');
+    await userEvent.click(searchButton);
+
+    const prev = screen.getByRole('prevBtn');
+    await userEvent.click(prev);
+    await userEvent.click(prev);
+    await userEvent.click(prev);
+    expect(router.state.location.search).toContain('page=1');
+  });
+
   afterAll(() => {
     mockFetch.dontMock();
   });
