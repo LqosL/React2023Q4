@@ -12,6 +12,8 @@ import SearchButton from '../components/SearchButton';
 import ResultsSection from '../components/SectionResults';
 import ErrorButton from '../components/ErrorButton';
 import { ParsedUrlQuery } from 'querystring';
+import {useRouter} from "next/router";
+import urlBuilder from "../utils/urlBuilder";
 
 type pageState = {
   search: string;
@@ -52,10 +54,15 @@ export const getServerSideProps = (async (ctx) => {
 export default function Page(
   pageState: InferGetServerSidePropsType<typeof getServerSideProps>
 ) {
+  const router = useRouter();
+
   const itemsPerPage = pageState.count;
-  // const searchString = pageState.search;
   const results: { docs: Array<Result> } = pageState.json || [];
-  const searchInputState = pageState.search;
+
+  const [searchInputState, setSearchInputState]: [
+    string,
+    (value: ((prevState: string) => string) | string) => void,
+  ] = useState(pageState.search);
 
   const [mustThrowError, setMustThrowError]: [
     boolean,
@@ -63,26 +70,23 @@ export default function Page(
   ] = useState(false);
 
   function changePagination(pageNum: string, pageSize: string): void {
-    console.log('changing page', pageNum, pageSize);
-  }
-
-  const pageString = pageState.page;
-  let page = 1;
-  if (pageString != null) {
-    let pageIsCorrect = true;
-    page = parseInt(pageString);
-    if (
-      page < 1 ||
-      isNaN(parseInt(pageString)) ||
-      page.toString() !== pageString
-    ) {
-      page = 1;
-      pageIsCorrect = false;
+    let page = pageNum;
+    if (parseInt(page) < 1) {
+      page = '1'
     }
-    if (!pageIsCorrect) console.log('page is incorrect');
-    // window.location.href = window.location.href
-    //     .toString()
-    //     .replace(`page=${pageString}`, `page=${page}`);
+    let count = pageSize;
+    if (parseInt(count) < 5) {
+      count = '5'
+    }
+    if (parseInt(count) > 15) {
+      count = '15'
+    }
+    router.push(urlBuilder(
+        undefined,
+        page,
+        count,
+        searchInputState
+    ))
   }
 
   const temporalIsLoading = false;
@@ -90,7 +94,7 @@ export default function Page(
     <div className="loader">...LOADING LIST...</div>
   ) : (
     <PaginationWrapper
-      currentPage={pageString}
+      currentPage={pageState.page}
       currentCount={itemsPerPage}
       changePagination={changePagination}
     />
@@ -113,13 +117,18 @@ export default function Page(
           <SearchInput
             searchInputState={searchInputState}
             setSearchInputState={(newString: string) =>
-              console.log('meow', newString)
+              setSearchInputState(newString)
             }
           />
           <SearchButton
             onClick={() => {
               console.log('clicked search');
-              // dispatcher(updateSearch({ text: searchInputState }));
+              router.push(urlBuilder(
+                  undefined,
+                  pageString,
+                  itemsPerPage,
+                  searchInputState
+              ))
             }}
           />
         </SearchSection>
