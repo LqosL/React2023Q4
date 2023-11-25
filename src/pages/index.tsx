@@ -1,7 +1,6 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { Result } from '../types/Result';
 import React, { ReactNode, useState } from 'react';
-import { Outlet } from 'react-router-dom';
 import PaginationWrapper from '../components/PaginationWrapper';
 import ErrorBoundary from '../components/ErrorBoundary';
 import ErrorMessager from '../components/ErrorMessager';
@@ -12,14 +11,22 @@ import SearchButton from '../components/SearchButton';
 import ResultsSection from '../components/SectionResults';
 import ErrorButton from '../components/ErrorButton';
 import { ParsedUrlQuery } from 'querystring';
-import {useRouter} from "next/router";
-import urlBuilder from "../utils/urlBuilder";
+import { useRouter } from 'next/router';
+import urlBuilder from '../utils/urlBuilder';
+import { Detail } from '../types/Detail';
+import SectionDetailsContainer from '../components/SectionDetailsContainer';
 
-type pageState = {
+export type detailedInfo = {
+  details?: Detail;
+  id?: string;
+};
+
+export type pageState = {
   search: string;
   page: string;
   count: string;
   json: { docs: Array<Result> };
+  details?: detailedInfo;
 };
 
 export interface Request extends ParsedUrlQuery {
@@ -52,7 +59,7 @@ export const getServerSideProps = (async (ctx) => {
 }) satisfies GetServerSideProps<pageState>;
 
 export default function Page(
-  pageState: InferGetServerSidePropsType<typeof getServerSideProps>
+  pageState: InferGetServerSidePropsType<typeof getServerSideProps> & pageState
 ) {
   const router = useRouter();
 
@@ -72,21 +79,16 @@ export default function Page(
   function changePagination(pageNum: string, pageSize: string): void {
     let page = pageNum;
     if (parseInt(page) < 1) {
-      page = '1'
+      page = '1';
     }
     let count = pageSize;
     if (parseInt(count) < 5) {
-      count = '5'
+      count = '5';
     }
     if (parseInt(count) > 15) {
-      count = '15'
+      count = '15';
     }
-    router.push(urlBuilder(
-        undefined,
-        page,
-        count,
-        searchInputState
-    ))
+    router.push(urlBuilder(undefined, page, count, searchInputState));
   }
 
   const temporalIsLoading = false;
@@ -100,13 +102,10 @@ export default function Page(
     />
   );
 
-  // const navigate = useNavigate();
-  // const location = useLocation();
-
   async function showDetails(key: string): Promise<void> {
-    // navigate({ pathname: key, search: location.search });
-    // dispatcher(updateViewMode(true));
-    console.log('show details', key);
+    router.push(
+      urlBuilder(key, pageState.page, itemsPerPage, searchInputState)
+    );
   }
 
   return (
@@ -122,13 +121,14 @@ export default function Page(
           />
           <SearchButton
             onClick={() => {
-              console.log('clicked search');
-              router.push(urlBuilder(
+              router.push(
+                urlBuilder(
                   undefined,
-                  pageString,
+                  pageState.page,
                   itemsPerPage,
                   searchInputState
-              ))
+                )
+              );
             }}
           />
         </SearchSection>
@@ -138,7 +138,7 @@ export default function Page(
             inLoadingNow={false}
             onItemSelected={(result: Result) => showDetails(result.key)}
           />
-          <Outlet />
+          <SectionDetailsContainer details={pageState.details} />
         </div>
         <ErrorButton
           onClick={(): void => {
