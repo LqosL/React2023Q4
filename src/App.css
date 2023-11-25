@@ -29,6 +29,17 @@ body {
   margin-bottom: 20vh;
   color: white;
 }
+.results_unit {
+  cursor: pointer;
+}
+.results_unit:hover {
+  scale: 1.03;
+  transition-duration: .3s;
+}
+.results_unit:active {
+  scale: 0.97;
+  transition-duration: .3s;
+}
 li {
   display: flex;
   flex-direction: row;

@@ -1,6 +1,6 @@
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { Result } from '../types/Result';
-import React, { ReactNode, useState } from 'react';
+import {GetServerSideProps, InferGetServerSidePropsType} from 'next';
+import {Result} from '../types/Result';
+import React, {ReactNode, useEffect, useState} from 'react';
 import PaginationWrapper from '../components/PaginationWrapper';
 import ErrorBoundary from '../components/ErrorBoundary';
 import ErrorMessager from '../components/ErrorMessager';
@@ -10,30 +10,11 @@ import SearchInput from '../components/SearchInput';
 import SearchButton from '../components/SearchButton';
 import ResultsSection from '../components/SectionResults';
 import ErrorButton from '../components/ErrorButton';
-import { ParsedUrlQuery } from 'querystring';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import urlBuilder from '../utils/urlBuilder';
-import { Detail } from '../types/Detail';
 import SectionDetailsContainer from '../components/SectionDetailsContainer';
-
-export type detailedInfo = {
-  details?: Detail;
-  id?: string;
-};
-
-export type pageState = {
-  search: string;
-  page: string;
-  count: string;
-  json: { docs: Array<Result> };
-  details?: detailedInfo;
-};
-
-export interface Request extends ParsedUrlQuery {
-  search?: string;
-  page?: string;
-  count?: string;
-}
+import {PageState} from "../types/PageState";
+import {Request} from "../types/Request";
 
 export const getServerSideProps = (async (ctx) => {
   const queryAsParams = ctx.query as Request;
@@ -56,15 +37,15 @@ export const getServerSideProps = (async (ctx) => {
       json: json,
     },
   };
-}) satisfies GetServerSideProps<pageState>;
+}) satisfies GetServerSideProps<PageState>;
 
 export default function Page(
-  pageState: InferGetServerSidePropsType<typeof getServerSideProps> & pageState
+  pageState: InferGetServerSidePropsType<typeof getServerSideProps> & PageState
 ) {
   const router = useRouter();
-
   const itemsPerPage = pageState.count;
   const results: { docs: Array<Result> } = pageState.json || [];
+  const currentResp: {docs: Array<Result>} = pageState.json;
 
   const [searchInputState, setSearchInputState]: [
     string,
@@ -76,23 +57,48 @@ export default function Page(
     React.Dispatch<React.SetStateAction<boolean>>,
   ] = useState(false);
 
+  const [loaderMain, setLoaderMain]: [
+      loaderMain: boolean, setLoaderMain: React.Dispatch<React.SetStateAction<boolean>>
+  ] = useState(false);
+
+  const [currentDetailKey, setCurrentDetailKey]: [
+    currentDetails: string|undefined, setCurrentDetails: React.Dispatch<React.SetStateAction<string|undefined>>
+ ] = useState(pageState.details?.details?.key);
+
+  const [recentState, setRecentState]: [
+    recentState: {docs: Array<Result>}, setRecentState: React.Dispatch<React.SetStateAction<{docs: Array<Result>}>>
+  ] = useState(currentResp);
+
+  useEffect(() => {
+    if (recentState == currentResp) return;
+    setLoaderMain(false)
+    setRecentState(currentResp)
+  }, [recentState,
+      currentResp])
+
   function changePagination(pageNum: string, pageSize: string): void {
     let page = pageNum;
-    if (parseInt(page) < 1) {
-      page = '1';
-    }
     let count = pageSize;
-    if (parseInt(count) < 5) {
-      count = '5';
-    }
-    if (parseInt(count) > 15) {
-      count = '15';
-    }
-    router.push(urlBuilder(undefined, page, count, searchInputState));
+
+    if (parseInt(page) < 1) page = '1';
+    if (parseInt(count) < 5) count = '5';
+    if (parseInt(count) > 15) count = '15';
+
+    setLoaderMain(true)
+    setCurrentDetailKey(undefined)
+      setTimeout(() => {
+          router.push(urlBuilder(undefined, page, count, searchInputState));
+      }, 1);
   }
 
-  const temporalIsLoading = false;
-  const loadingContent: ReactNode = temporalIsLoading ? (
+  function closeDetails() {
+    setCurrentDetailKey(undefined)
+      setTimeout(() => {
+          router.push(urlBuilder(undefined, pageState.page, itemsPerPage, searchInputState))
+      }, 1);
+  }
+
+  const loadingContent: ReactNode = loaderMain ? (
     <div className="loader">...LOADING LIST...</div>
   ) : (
     <PaginationWrapper
@@ -103,9 +109,12 @@ export default function Page(
   );
 
   async function showDetails(key: string): Promise<void> {
-    router.push(
-      urlBuilder(key, pageState.page, itemsPerPage, searchInputState)
-    );
+    setCurrentDetailKey(key)
+    setTimeout(() => {
+        router.push(
+            urlBuilder(key, pageState.page, itemsPerPage, searchInputState)
+        );
+    }, 1);
   }
 
   return (
@@ -121,24 +130,29 @@ export default function Page(
           />
           <SearchButton
             onClick={() => {
-              router.push(
-                urlBuilder(
-                  undefined,
-                  pageState.page,
-                  itemsPerPage,
-                  searchInputState
-                )
-              );
+              setLoaderMain(true);
+                setCurrentDetailKey(undefined);
+            setTimeout(() => {
+                router.push(
+                    urlBuilder(
+                        undefined,
+                        pageState.page,
+                        itemsPerPage,
+                        searchInputState
+                    )
+                );
+            }, 1);
             }}
           />
         </SearchSection>
         <div className={'main'}>
           <ResultsSection
             results={results.docs}
-            inLoadingNow={false}
+            inLoadingNow={loaderMain}
             onItemSelected={(result: Result) => showDetails(result.key)}
           />
-          <SectionDetailsContainer details={pageState.details} />
+            <SectionDetailsContainer details={pageState.details} currentDetailKey={currentDetailKey} closeDetails={closeDetails}/>
+
         </div>
         <ErrorButton
           onClick={(): void => {

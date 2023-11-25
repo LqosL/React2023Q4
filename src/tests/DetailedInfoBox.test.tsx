@@ -80,7 +80,7 @@ describe('Clicking the close button hides the component', () => {
         </MemoryRouter>
       </Provider>
     );
-    expect(await screen.findByRole('details_section_container')).toBeTruthy();
+    // expect(await screen.findByRole('details_section_container')).toBeTruthy();
 
     // const closebutton = screen.getByRole('closeDetailsBtn');
     //

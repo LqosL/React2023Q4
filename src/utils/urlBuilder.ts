@@ -4,9 +4,9 @@ export default function urlBuilder(
   count: string,
   searchString: string
 ): string {
-  let baseUrl: string = '';
+  let baseUrl: string = '/';
   if (id) {
-    baseUrl += `${id}`;
+    baseUrl += `${id.startsWith('/')?id.slice(1):id}`;
   }
   return (
     baseUrl +

@@ -1,10 +1,10 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import {
   getServerSideProps as indexGetServerSideProps,
-  pageState,
   default as IndexPage,
 } from '../../index';
 import { Detail } from '../../../types/Detail';
+import {PageState} from "../../../types/PageState";
 
 export const getServerSideProps = (async (ctx) => {
   const baseProperties = await indexGetServerSideProps(ctx);
@@ -22,10 +22,10 @@ export const getServerSideProps = (async (ctx) => {
       },
     },
   };
-}) satisfies GetServerSideProps<pageState>;
+}) satisfies GetServerSideProps<PageState>;
 
 export default function Page(
-  pageState: InferGetServerSidePropsType<typeof getServerSideProps> & pageState
+  pageState: InferGetServerSidePropsType<typeof getServerSideProps> & PageState
 ) {
   return IndexPage(pageState);
 }

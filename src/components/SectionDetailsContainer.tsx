@@ -1,31 +1,29 @@
 import React, { ReactNode } from 'react';
-import { Detail } from '../types/Detail';
 import DetailsSection from './SectionDetails';
-import { detailedInfo } from '../pages';
+
+import {DetailedInfo} from "../types/DetailedInfo";
 
 export default function SectionDetailsContainer({
   details,
+  currentDetailKey,
+  closeDetails
 }: {
-  details?: detailedInfo;
+  details?: DetailedInfo;
+  currentDetailKey: string|undefined;
+  closeDetails: () => void;
 }): ReactNode {
-  const shownDetail: Detail | undefined = details?.details;
+  if (currentDetailKey == undefined) return<></>;
 
-  // useEffect(() => {
-  //   const requestIsLoading =
-  //     detailsRequest.isLoading || detailsRequest.isFetching;
-  //
-  //   dispatcher(updateLoaderDetails(requestIsLoading));
-  //
-  //   if (requestIsLoading || detailsRequest.data == null) return;
-  //
-  //   setShownDetail(detailsRequest.data);
-  //   dispatcher(updateLoaderDetails(false));
-  // }, [dispatcher, detailsRequest]);
-
-  function unsetSelectedSectionDetails() {
-    // setShownDetail(undefined);
-    // navigate({ pathname: '/', search: location.search });
-  }
+    const loadingDetails:ReactNode = currentDetailKey !== details?.details?.key ? (
+        <div role="details_loader" className="loader details_loader">
+            ...LOADING DETAILS...
+        </div>
+    ):(
+        <DetailsSection
+            details={details?.details}
+            onClickOutside={closeDetails}
+        />
+    )
 
   return (
     <div role="details_section_container" className="details_section_container">
@@ -33,16 +31,13 @@ export default function SectionDetailsContainer({
         role="closeDetailsBtn"
         className="closeDetailsBtn"
         onClick={() => {
-          unsetSelectedSectionDetails();
+          closeDetails();
         }}
       >
         {' '}
         ❌{' '}
       </button>
-      <DetailsSection
-        details={shownDetail}
-        onClickOutside={unsetSelectedSectionDetails}
-      />
+        {loadingDetails}
     </div>
   );
 }

@@ -7,15 +7,6 @@ export default function DetailsSection({
   details?: Detail;
   onClickOutside: () => void;
 }): ReactNode {
-  const loaderDetails: boolean = details == undefined;
-
-  const loadingDetails: ReactNode = loaderDetails ? (
-    <div role="details_loader" className="loader details_loader">
-      ...LOADING DETAILS...
-    </div>
-  ) : (
-    <></>
-  );
 
   function showDetails(details: Detail): ReactNode {
     if (Object.keys(details).length === 0) {
@@ -75,7 +66,6 @@ export default function DetailsSection({
 
   return (
     <div className="details_list_wrapper">
-      {loadingDetails}
       {details ? showDetails(details) : <></>}
     </div>
   );
