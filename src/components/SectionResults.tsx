@@ -21,6 +21,7 @@ export default function ResultsSection({
       </div>
     );
   }
+  console.log(results);
   return (
     <div>
       <ul role="ResultsList" className="results_list">

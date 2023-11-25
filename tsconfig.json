@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "allowJs": false,
+    "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -15,11 +15,20 @@
     "isolatedModules": true,
     "noImplicitAny": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "preserve",
+    "plugins": [
+      { "name": "next" },
+    ],
+    "incremental": true,
   },
   "include": [
     "src",
-    "node_modules/vitest/globals.d.ts"
+    "node_modules/vitest/globals.d.ts",
+    "./dist/types/**/*.ts",
+    "./next-env.d.ts",
+  ],
+  "exclude": [
+    "./node_modules",
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build && cp netlify.toml dist/",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format:fix": "prettier --write src",
     "preview": "vite preview",
@@ -40,11 +41,11 @@
     "react-dom": "^18.2.0",
     "react-redux": "^8.1.3",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5",
     "vitest": "^0.34.6",
     "vitest-fetch-mock": "^0.2.2"
   },
   "dependencies": {
+    "next": "^14.0.3",
     "react-router-dom": "^6.18.0"
   }
 }
