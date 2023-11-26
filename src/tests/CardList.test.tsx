@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import ResultsSection from '../components/SectionResults';
-import { Provider } from 'react-redux';
-import { store } from '../redux/store';
 
 describe('CardList tests', async () => {
   screen.debug();
@@ -67,13 +65,11 @@ describe('CardList tests', async () => {
 
   it('Component renders the specified number of cards for results list', async () => {
     render(
-      <Provider store={store}>
         <ResultsSection
           results={results}
           inLoadingNow={false}
           onItemSelected={() => Object}
         />
-      </Provider>
     );
     await screen.findByRole('ResultsList');
     const a = screen.getByRole('ResultsList');

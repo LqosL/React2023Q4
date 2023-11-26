@@ -83,6 +83,10 @@ li {
   font-weight: bold;
   font-size: 2rem;
   color: white;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .paginWrapper {
   display: flex;
@@ -91,6 +95,7 @@ li {
   color: white;
   font-size: 1rem;
   font-weight: bolder;
+  align-items: center;
 }
 #paginDisplay {
   color: #ffffff;

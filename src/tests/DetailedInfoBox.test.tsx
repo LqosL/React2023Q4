@@ -2,13 +2,11 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { cleanup, render, screen } from '@testing-library/react';
 import DetailsSection from '../components/SectionDetails';
 import SectionDetailsContainer from '../components/SectionDetailsContainer';
-// import userEvent from '@testing-library/user-event';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import React from 'react';
-import { Provider } from 'react-redux';
-import { store } from '../redux/store';
-import { updateViewMode } from '../redux/viewModeSlice';
-// import { updateLoaderDetails } from '../redux/loaderDetailsSlice';
+import Page from "../pages";
+import userEvent from "@testing-library/user-event";
+import {beforeEach, vi} from "vitest";
+
 
 const details = {
   title: 'aaa',
@@ -18,31 +16,27 @@ const details = {
   key: 'aaa',
   authors: [{ author: { key: 'aaa' } }],
 };
-// describe('Loading indicator is displayed while fetching data', () => {
-//   afterEach(() => cleanup());
-//   it('Shows loading indicator', async () => {
-//     screen.debug();
-//     store.dispatch(updateLoaderDetails(true));
-//     render(
-//       <Provider store={store}>
-//         <DetailsSection details={details} onClickOutside={() => {}} />
-//       </Provider>
-//     );
-//
-//     await screen.findByRole('details_loader');
-//     const a = screen.getByRole('details_loader');
-//     expect(a).toBeTruthy();
-//   });
-// });
+describe('Loading indicator is displayed while fetching data', () => {
+  afterEach(() => cleanup());
+  it('Shows loading indicator', async () => {
+    screen.debug();
+    render(
+        <SectionDetailsContainer details={{details: details, id: 'aaa'}} currentDetailKey={'bbb'} closeDetails={()=>{}}/>
+        // <DetailsSection details={undefined} onClickOutside={() => {}} />
+    );
+
+    await screen.findByRole('details_loader');
+    const a = screen.getByRole('details_loader');
+    expect(a).toBeTruthy();
+  });
+});
 
 describe('It correctly displays the detailed card data', () => {
   afterEach(() => cleanup());
   it('displays the detailed card data', async () => {
     screen.debug();
     render(
-      <Provider store={store}>
         <DetailsSection details={details} onClickOutside={() => {}} />
-      </Provider>
     );
 
     await screen.findByRole('details_list');
@@ -63,36 +57,53 @@ describe('It correctly displays the detailed card data', () => {
 });
 
 describe('Clicking the close button hides the component', () => {
+  beforeEach(() => {
+    vi.mock('next/router', () => {
+      const newUseRouter = () => {
+        return {
+          push: () => {
+          }
+        };
+      };
+      return { useRouter: newUseRouter };
+    })
+  })
+  afterEach(() => {
+    vi.restoreAllMocks();
+    cleanup();
+  });
+
+
   afterEach(() => cleanup());
   it('Hides the component', async () => {
     screen.debug();
-    store.dispatch(updateViewMode(true));
-    render(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={['/test']}>
-          <Routes>
-            <Route path={'/'} element={<></>}></Route>
-            <Route
-              path={'/test'}
-              element={<SectionDetailsContainer key={details.key} />}
-            ></Route>
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
-    // expect(await screen.findByRole('details_section_container')).toBeTruthy();
+    render(<Page
+        search={'hello'}
+        details={undefined}
+        page={'1'}
+        count={'7'}
+        json={{docs: [{
+            title: 'aaa',
+            author_name: 'aaa',
+            first_publish_year: '1111',
+            key: 'aaa',
+          }]}}
+    />);
+    const card = (await screen.findAllByRole('results_unit'))[0];
+    await userEvent.click(card);
 
-    // const closebutton = screen.getByRole('closeDetailsBtn');
-    //
-    // await userEvent.click(closebutton);
-    //
-    // let exists = false;
-    // try {
-    //   await screen.findByRole('details_section_container');
-    //   exists = true;
-    // } catch (e) {
-    //   exists = false;
-    // }
-    // expect(exists).toBeFalsy();
+    expect(await screen.findByRole('details_section_container')).toBeTruthy();
+
+    const closebutton = screen.getByRole('closeDetailsBtn');
+    await userEvent.click(closebutton);
+
+    let exists = false;
+    try {
+      await screen.findByRole('details_section_container');
+      exists = true;
+    } catch (e) {
+      exists = false;
+    }
+    expect(exists).toBeFalsy();
   });
 });

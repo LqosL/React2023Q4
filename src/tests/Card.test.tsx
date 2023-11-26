@@ -4,8 +4,7 @@ import React from 'react';
 import { ResultsUnit } from '../components/ResultsUnit';
 import userEvent from '@testing-library/user-event';
 import createFetchMock from 'vitest-fetch-mock';
-import { Provider } from 'react-redux';
-import { store } from '../redux/store';
+
 
 describe('Card tests rendering', async () => {
   const fetchMocker = createFetchMock(vi);
@@ -22,7 +21,6 @@ describe('Card tests rendering', async () => {
   it('Card component renders the relevant card data', async () => {
     let clickHappen = false;
     render(
-      <Provider store={store}>
         <ResultsUnit
           title={result.title}
           key={result.key}
@@ -32,7 +30,6 @@ describe('Card tests rendering', async () => {
             clickHappen = true;
           }}
         />
-      </Provider>
     );
     await screen.findByRole('results_unit');
     const a = screen.getByRole('results_unit');

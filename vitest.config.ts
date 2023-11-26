@@ -8,7 +8,7 @@ export default defineConfig({
         environment: 'jsdom',
         coverage: {
             reporter: ['text', 'json', 'html'],
-            extension: ['ts', 'tsx'],
+            extension: ['ts', 'tsx', 'js'],
             include: ['src'],
             all: true,
         },

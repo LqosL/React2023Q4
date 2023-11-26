@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import NotFound from '../components/NotFound';
+import NotFound from '../pages/404';
 
 describe('NotFound tests', async () => {
   screen.debug();
