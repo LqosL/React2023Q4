@@ -1,6 +1,6 @@
-import {Detail} from "./Detail";
+import { Detail } from './Detail';
 
 export type DetailedInfo = {
-    details?: Detail;
-    id?: string;
+  details?: Detail;
+  id?: string;
 };

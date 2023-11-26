@@ -1,7 +1,7 @@
-import {ParsedUrlQuery} from "querystring";
+import { ParsedUrlQuery } from 'querystring';
 
 export interface Request extends ParsedUrlQuery {
-    search?: string;
-    page?: string;
-    count?: string;
+  search?: string;
+  page?: string;
+  count?: string;
 }

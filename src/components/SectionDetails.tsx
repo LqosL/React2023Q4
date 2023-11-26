@@ -7,7 +7,6 @@ export default function DetailsSection({
   details?: Detail;
   onClickOutside: () => void;
 }): ReactNode {
-
   function showDetails(details: Detail): ReactNode {
     if (Object.keys(details).length === 0) {
       return (

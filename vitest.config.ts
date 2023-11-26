@@ -10,6 +10,7 @@ export default defineConfig({
             reporter: ['text', 'json', 'html'],
             extension: ['ts', 'tsx', 'js'],
             include: ['src'],
+            exclude: ['src/types', ],
             all: true,
         },
     },

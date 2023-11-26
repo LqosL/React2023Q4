@@ -65,11 +65,11 @@ describe('CardList tests', async () => {
 
   it('Component renders the specified number of cards for results list', async () => {
     render(
-        <ResultsSection
-          results={results}
-          inLoadingNow={false}
-          onItemSelected={() => Object}
-        />
+      <ResultsSection
+        results={results}
+        inLoadingNow={false}
+        onItemSelected={() => Object}
+      />
     );
     await screen.findByRole('ResultsList');
     const a = screen.getByRole('ResultsList');

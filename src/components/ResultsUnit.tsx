@@ -8,7 +8,6 @@ export function ResultsUnit({
   key,
   onClick,
 }: Result & { onClick: () => void }): ReactNode {
-  // const dispatcher = useDispatch();
   const resultOnClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onClick();
@@ -18,7 +17,6 @@ export function ResultsUnit({
       role={'results_unit'}
       className="results_unit"
       onClick={(e) => {
-        // dispatcher(updateViewMode(true));
         resultOnClick(e);
       }}
       key={key}

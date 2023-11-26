@@ -6,7 +6,7 @@ export default function urlBuilder(
 ): string {
   let baseUrl: string = '/';
   if (id) {
-    baseUrl += `${id.startsWith('/')?id.slice(1):id}`;
+    baseUrl += `${id.startsWith('/') ? id.slice(1) : id}`;
   }
   return (
     baseUrl +

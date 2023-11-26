@@ -3,10 +3,10 @@ import { cleanup, render, screen } from '@testing-library/react';
 import DetailsSection from '../components/SectionDetails';
 import SectionDetailsContainer from '../components/SectionDetailsContainer';
 import React from 'react';
-import Page from "../pages";
-import userEvent from "@testing-library/user-event";
-import {beforeEach, vi} from "vitest";
-
+import Page from '../pages';
+import userEvent from '@testing-library/user-event';
+import { beforeEach, vi } from 'vitest';
+import { Detail } from '../types/Detail';
 
 const details = {
   title: 'aaa',
@@ -21,8 +21,11 @@ describe('Loading indicator is displayed while fetching data', () => {
   it('Shows loading indicator', async () => {
     screen.debug();
     render(
-        <SectionDetailsContainer details={{details: details, id: 'aaa'}} currentDetailKey={'bbb'} closeDetails={()=>{}}/>
-        // <DetailsSection details={undefined} onClickOutside={() => {}} />
+      <SectionDetailsContainer
+        details={{ details: details, id: 'aaa' }}
+        currentDetailKey={'bbb'}
+        closeDetails={() => {}}
+      />
     );
 
     await screen.findByRole('details_loader');
@@ -35,9 +38,7 @@ describe('It correctly displays the detailed card data', () => {
   afterEach(() => cleanup());
   it('displays the detailed card data', async () => {
     screen.debug();
-    render(
-        <DetailsSection details={details} onClickOutside={() => {}} />
-    );
+    render(<DetailsSection details={details} onClickOutside={() => {}} />);
 
     await screen.findByRole('details_list');
     const a = screen.getByRole('details_list');
@@ -54,45 +55,68 @@ describe('It correctly displays the detailed card data', () => {
       'https://openlibrary.org' + details.authors[0].author.key
     );
   });
-});
 
+  it('shows no details for empty list', async () => {
+    screen.debug();
+
+    render(
+      <DetailsSection
+        details={{} as unknown as Detail}
+        onClickOutside={() => {}}
+      />
+    );
+    const emptyList = await screen.findByRole('details_list');
+
+    expect(emptyList).toBeTruthy();
+    expect(emptyList.className).toBe('details_list empty_list');
+  });
+});
+const hrefs: [string] = ['initial'];
 describe('Clicking the close button hides the component', () => {
   beforeEach(() => {
     vi.mock('next/router', () => {
       const newUseRouter = () => {
         return {
-          push: () => {
-          }
+          push: (href: string) => {
+            hrefs.push(href);
+          },
         };
       };
       return { useRouter: newUseRouter };
-    })
-  })
+    });
+  });
   afterEach(() => {
     vi.restoreAllMocks();
     cleanup();
   });
 
-
   afterEach(() => cleanup());
   it('Hides the component', async () => {
     screen.debug();
-    render(<Page
+    render(
+      <Page
         search={'hello'}
         details={undefined}
         page={'1'}
         count={'7'}
-        json={{docs: [{
-            title: 'aaa',
-            author_name: 'aaa',
-            first_publish_year: '1111',
-            key: 'aaa',
-          }]}}
-    />);
+        json={{
+          docs: [
+            {
+              title: 'aaa',
+              author_name: 'aaa',
+              first_publish_year: '1111',
+              key: 'aaa',
+            },
+          ],
+        }}
+      />
+    );
     const card = (await screen.findAllByRole('results_unit'))[0];
     await userEvent.click(card);
 
     expect(await screen.findByRole('details_section_container')).toBeTruthy();
+
+    const historyLength = hrefs.length;
 
     const closebutton = screen.getByRole('closeDetailsBtn');
     await userEvent.click(closebutton);
@@ -105,5 +129,6 @@ describe('Clicking the close button hides the component', () => {
       exists = false;
     }
     expect(exists).toBeFalsy();
+    expect(historyLength).toBeLessThan(hrefs.length);
   });
 });

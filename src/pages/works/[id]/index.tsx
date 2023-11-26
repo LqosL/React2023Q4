@@ -4,7 +4,7 @@ import {
   default as IndexPage,
 } from '../../index';
 import { Detail } from '../../../types/Detail';
-import {PageState} from "../../../types/PageState";
+import { PageState } from '../../../types/PageState';
 
 export const getServerSideProps = (async (ctx) => {
   const baseProperties = await indexGetServerSideProps(ctx);

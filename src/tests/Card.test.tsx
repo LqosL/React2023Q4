@@ -5,7 +5,6 @@ import { ResultsUnit } from '../components/ResultsUnit';
 import userEvent from '@testing-library/user-event';
 import createFetchMock from 'vitest-fetch-mock';
 
-
 describe('Card tests rendering', async () => {
   const fetchMocker = createFetchMock(vi);
   beforeAll(() => {
@@ -21,15 +20,15 @@ describe('Card tests rendering', async () => {
   it('Card component renders the relevant card data', async () => {
     let clickHappen = false;
     render(
-        <ResultsUnit
-          title={result.title}
-          key={result.key}
-          first_publish_year={result.first_publish_year}
-          author_name={result.author_name}
-          onClick={() => {
-            clickHappen = true;
-          }}
-        />
+      <ResultsUnit
+        title={result.title}
+        key={result.key}
+        first_publish_year={result.first_publish_year}
+        author_name={result.author_name}
+        onClick={() => {
+          clickHappen = true;
+        }}
+      />
     );
     await screen.findByRole('results_unit');
     const a = screen.getByRole('results_unit');

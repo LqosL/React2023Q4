@@ -1,29 +1,30 @@
 import React, { ReactNode } from 'react';
 import DetailsSection from './SectionDetails';
 
-import {DetailedInfo} from "../types/DetailedInfo";
+import { DetailedInfo } from '../types/DetailedInfo';
 
 export default function SectionDetailsContainer({
   details,
   currentDetailKey,
-  closeDetails
+  closeDetails,
 }: {
   details?: DetailedInfo;
-  currentDetailKey: string|undefined;
+  currentDetailKey: string | undefined;
   closeDetails: () => void;
 }): ReactNode {
-  if (currentDetailKey == undefined) return<></>;
+  if (currentDetailKey == undefined) return <></>;
 
-    const loadingDetails:ReactNode = currentDetailKey !== details?.details?.key ? (
-        <div role="details_loader" className="loader details_loader">
-            ...LOADING DETAILS...
-        </div>
-    ):(
-        <DetailsSection
-            details={details?.details}
-            onClickOutside={closeDetails}
-        />
-    )
+  const loadingDetails: ReactNode =
+    currentDetailKey !== details?.details?.key ? (
+      <div role="details_loader" className="loader details_loader">
+        ...LOADING DETAILS...
+      </div>
+    ) : (
+      <DetailsSection
+        details={details?.details}
+        onClickOutside={closeDetails}
+      />
+    );
 
   return (
     <div role="details_section_container" className="details_section_container">
@@ -37,7 +38,7 @@ export default function SectionDetailsContainer({
         {' '}
         ❌{' '}
       </button>
-        {loadingDetails}
+      {loadingDetails}
     </div>
   );
 }
