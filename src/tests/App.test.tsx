@@ -1,23 +1,23 @@
 import { cleanup, render, screen } from '@testing-library/react';
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import {
-  afterAll,
   afterEach,
   beforeAll,
+  beforeEach,
   describe,
   expect,
   it,
   vi,
 } from 'vitest';
 import React from 'react';
-import { AppContext } from '../types/AppContext';
 import userEvent from '@testing-library/user-event';
+import Page, { getServerSideProps } from '../pages';
+import NotFound from '../pages/404';
+import { Request } from '../types/Request';
+import { GetServerSidePropsContext } from 'next';
 import createFetchMock from 'vitest-fetch-mock';
-import { AppRouterConfig } from '../AppRouterConfig';
 
-const containerContext: AppContext = {
+const containerContext = {
   searchString: 'hello',
-  setSearch: () => {},
   results: [
     {
       title: 'aaa',
@@ -62,71 +62,59 @@ const containerContext: AppContext = {
       key: '/works/ggg',
     },
   ],
-  setResults: () => {},
 };
 
-export function NewFakeLocalStorage(): Storage {
-  let store: { [key: string]: string } = {};
-  return {
-    getItem: (key: string): string | null => store[key] || null,
-    setItem: (key: string, value: string): void => {
-      store[key] = value.toString();
-    },
-    key: (index: number) => Object.keys(store)[index] || null,
-    removeItem: (key: string) => delete store[key],
-    clear: () => {
-      store = {};
-    },
-    get length() {
-      return Object.keys(store).length;
-    },
-  } as Storage;
-}
-
-const localStorageMock: Storage = NewFakeLocalStorage();
-
-Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock,
-});
-
+let calledAPI = false;
+const hrefs: [string] = ['initial'];
 describe('Tests for Card component', () => {
   const mockFetch = createFetchMock(vi);
-  let calledAPI = false;
 
-  beforeAll(() => {
-    mockFetch.enableMocks();
-    mockFetch.mockResponse((request) => {
-      if (/search\.json/.test(request.url)) {
-        calledAPI = true;
-        return JSON.stringify({ docs: containerContext.results });
-      }
-      if (/works/.test(request.url)) {
-        const queryParamsIndex = request.url.indexOf('.json');
-        const key = request.url.substring(
-          request.url.lastIndexOf('/') + 1,
-          queryParamsIndex == -1 ? undefined : queryParamsIndex
-        );
-        calledAPI = true;
-        return JSON.stringify(
-          containerContext.results.filter((work) => work.key.includes(key))[0]
-        );
-      }
-      throw Error();
+  beforeAll(() => {});
+
+  beforeEach(() => {
+    vi.mock('next/router', () => {
+      const newUseRouter = () => {
+        return {
+          push: (href: string) => {
+            hrefs.push(href);
+            calledAPI = true;
+          },
+        };
+      };
+      return { useRouter: newUseRouter };
     });
+  });
+  afterEach(() => {
+    vi.restoreAllMocks();
+    cleanup();
   });
 
   afterEach(() => {
     cleanup();
-    fetchMock.mockClear();
+    mockFetch.mockClear();
   });
 
   screen.debug();
 
   it('Validate that clicking on a card opens a detailed card component', async () => {
-    const router = createMemoryRouter(AppRouterConfig);
-    render(<RouterProvider router={router} />);
-    const searchButton = screen.getByRole('search_button');
-    await userEvent.click(searchButton);
+    render(
+      <Page
+        search={'hello'}
+        details={undefined}
+        page={'1'}
+        count={'7'}
+        json={{
+          docs: [
+            {
+              title: 'aaa',
+              author_name: 'aaa',
+              first_publish_year: '1111',
+              key: 'aaa',
+            },
+          ],
+        }}
+      />
+    );
 
     const card = (await screen.findAllByRole('results_unit'))[0];
     await userEvent.click(card);
@@ -137,27 +125,90 @@ describe('Tests for Card component', () => {
   });
 
   it('Check that clicking triggers an additional API call to fetch detailed information.', async () => {
-    const router = createMemoryRouter(AppRouterConfig);
-    render(<RouterProvider router={router} />);
-    const searchButton = screen.getByRole('search_button');
-    await userEvent.click(searchButton);
+    render(
+      <Page
+        search={'hello'}
+        details={undefined}
+        page={'1'}
+        count={'7'}
+        json={{
+          docs: [
+            {
+              title: 'aaa',
+              author_name: 'aaa',
+              first_publish_year: '1111',
+              key: 'aaa',
+            },
+          ],
+        }}
+      />
+    );
 
     const card = (await screen.findAllByRole('results_unit'))[0];
     await userEvent.click(card);
 
     expect(calledAPI).toBeTruthy();
+
+    const historyLength = hrefs.length;
+
+    const next = (await screen.findAllByRole('nextBtn'))[0];
+    await userEvent.click(next);
+
+    expect(historyLength).toBeLessThan(hrefs.length);
+  });
+
+  it('Check that clicking apply triggers an additional API call to update page size', async () => {
+    render(
+      <Page
+        search={'hello'}
+        details={undefined}
+        page={'1'}
+        count={'7'}
+        json={{
+          docs: [
+            {
+              title: 'aaa',
+              author_name: 'aaa',
+              first_publish_year: '1111',
+              key: 'aaa',
+            },
+          ],
+        }}
+      />
+    );
+
+    const historyLength = hrefs.length;
+
+    const submit = (await screen.findAllByRole('page_size_submit'))[0];
+    await userEvent.click(submit);
+
+    expect(historyLength).toBeLessThan(hrefs.length);
   });
 
   it('404 page is displayed when navigating to an invalid route.', async () => {
-    const router = createMemoryRouter(AppRouterConfig, {
-      initialEntries: ['/fuuuuuuuuuu'],
-    });
-    render(<RouterProvider router={router} />);
+    render(<NotFound />);
     const notFound = screen.getByRole('NotFoundPage');
     expect(notFound).toBeTruthy();
   });
 
-  afterAll(() => {
-    mockFetch.dontMock();
+  it('getServerSideProps works properly on no context params and query', async () => {
+    const query: Request = {
+      search: 'sample',
+      page: '1',
+      count: '10',
+    };
+    const props = {
+      query,
+    };
+    mockFetch.mockOnce(() => {
+      return JSON.stringify(containerContext);
+    });
+    const resultProps = await getServerSideProps(
+      props as GetServerSidePropsContext
+    );
+
+    expect(resultProps.props.page).toBe(query.page);
+    expect(resultProps.props.count).toBe(query.count);
+    expect(resultProps.props.search).toBe(query.search);
   });
 });

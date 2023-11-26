@@ -2,13 +2,11 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { cleanup, render, screen } from '@testing-library/react';
 import DetailsSection from '../components/SectionDetails';
 import SectionDetailsContainer from '../components/SectionDetailsContainer';
-import userEvent from '@testing-library/user-event';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import React from 'react';
-import { Provider } from 'react-redux';
-import { store } from '../redux/store';
-import { updateViewMode } from '../redux/viewModeSlice';
-import { updateLoaderDetails } from '../redux/loaderDetailsSlice';
+import Page from '../pages';
+import userEvent from '@testing-library/user-event';
+import { beforeEach, vi } from 'vitest';
+import { Detail } from '../types/Detail';
 
 const details = {
   title: 'aaa',
@@ -22,11 +20,12 @@ describe('Loading indicator is displayed while fetching data', () => {
   afterEach(() => cleanup());
   it('Shows loading indicator', async () => {
     screen.debug();
-    store.dispatch(updateLoaderDetails(true));
     render(
-      <Provider store={store}>
-        <DetailsSection details={details} onClickOutside={() => {}} />
-      </Provider>
+      <SectionDetailsContainer
+        details={{ details: details, id: 'aaa' }}
+        currentDetailKey={'bbb'}
+        closeDetails={() => {}}
+      />
     );
 
     await screen.findByRole('details_loader');
@@ -39,11 +38,7 @@ describe('It correctly displays the detailed card data', () => {
   afterEach(() => cleanup());
   it('displays the detailed card data', async () => {
     screen.debug();
-    render(
-      <Provider store={store}>
-        <DetailsSection details={details} onClickOutside={() => {}} />
-      </Provider>
-    );
+    render(<DetailsSection details={details} onClickOutside={() => {}} />);
 
     await screen.findByRole('details_list');
     const a = screen.getByRole('details_list');
@@ -60,30 +55,70 @@ describe('It correctly displays the detailed card data', () => {
       'https://openlibrary.org' + details.authors[0].author.key
     );
   });
-});
 
+  it('shows no details for empty list', async () => {
+    screen.debug();
+
+    render(
+      <DetailsSection
+        details={{} as unknown as Detail}
+        onClickOutside={() => {}}
+      />
+    );
+    const emptyList = await screen.findByRole('details_list');
+
+    expect(emptyList).toBeTruthy();
+    expect(emptyList.className).toBe('details_list empty_list');
+  });
+});
+const hrefs: [string] = ['initial'];
 describe('Clicking the close button hides the component', () => {
+  beforeEach(() => {
+    vi.mock('next/router', () => {
+      const newUseRouter = () => {
+        return {
+          push: (href: string) => {
+            hrefs.push(href);
+          },
+        };
+      };
+      return { useRouter: newUseRouter };
+    });
+  });
+  afterEach(() => {
+    vi.restoreAllMocks();
+    cleanup();
+  });
+
   afterEach(() => cleanup());
   it('Hides the component', async () => {
     screen.debug();
-    store.dispatch(updateViewMode(true));
     render(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={['/test']}>
-          <Routes>
-            <Route path={'/'} element={<></>}></Route>
-            <Route
-              path={'/test'}
-              element={<SectionDetailsContainer key={details.key} />}
-            ></Route>
-          </Routes>
-        </MemoryRouter>
-      </Provider>
+      <Page
+        search={'hello'}
+        details={undefined}
+        page={'1'}
+        count={'7'}
+        json={{
+          docs: [
+            {
+              title: 'aaa',
+              author_name: 'aaa',
+              first_publish_year: '1111',
+              key: 'aaa',
+            },
+          ],
+        }}
+      />
     );
+    const card = (await screen.findAllByRole('results_unit'))[0];
+    await userEvent.click(card);
+
     expect(await screen.findByRole('details_section_container')).toBeTruthy();
 
-    const closebutton = screen.getByRole('closeDetailsBtn');
+    const historyLength = hrefs.length;
 
+    const closebutton = screen.getByRole('closeDetailsBtn');
     await userEvent.click(closebutton);
 
     let exists = false;
@@ -94,5 +129,6 @@ describe('Clicking the close button hides the component', () => {
       exists = false;
     }
     expect(exists).toBeFalsy();
+    expect(historyLength).toBeLessThan(hrefs.length);
   });
 });

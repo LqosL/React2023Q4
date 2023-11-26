@@ -1,8 +1,5 @@
 import React, { ReactNode } from 'react';
 import { Detail } from '../types/Detail';
-import { useDispatch, useSelector } from 'react-redux';
-import { updateViewMode } from '../redux/viewModeSlice';
-import { LoaderDetailsStatePart } from '../redux/loaderDetailsSlice';
 
 export default function DetailsSection({
   details,
@@ -10,21 +7,7 @@ export default function DetailsSection({
   details?: Detail;
   onClickOutside: () => void;
 }): ReactNode {
-  const loaderDetails: boolean = useSelector(
-    (state: LoaderDetailsStatePart) => state.loaderDetails.loaderDetails
-  );
-  const loadingDetails: ReactNode = loaderDetails ? (
-    <div role="details_loader" className="loader details_loader">
-      ...LOADING DETAILS...
-    </div>
-  ) : (
-    <></>
-  );
-
-  const dispatcher = useDispatch();
-
   function showDetails(details: Detail): ReactNode {
-    dispatcher(updateViewMode(true));
     if (Object.keys(details).length === 0) {
       return (
         <div role="details_list" className="details_list empty_list">
@@ -37,6 +20,7 @@ export default function DetailsSection({
     const authorLink: string | undefined = details.authors
       ? 'https://openlibrary.org' + details.authors[0].author.key
       : undefined;
+
     return (
       <div role="details_list" className="details_list">
         <div className="details_unit">
@@ -81,7 +65,6 @@ export default function DetailsSection({
 
   return (
     <div className="details_list_wrapper">
-      {loadingDetails}
       {details ? showDetails(details) : <></>}
     </div>
   );

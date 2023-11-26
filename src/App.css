@@ -29,6 +29,17 @@ body {
   margin-bottom: 20vh;
   color: white;
 }
+.results_unit {
+  cursor: pointer;
+}
+.results_unit:hover {
+  scale: 1.03;
+  transition-duration: 0.3s;
+}
+.results_unit:active {
+  scale: 0.97;
+  transition-duration: 0.3s;
+}
 li {
   display: flex;
   flex-direction: row;
@@ -72,6 +83,10 @@ li {
   font-weight: bold;
   font-size: 2rem;
   color: white;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .paginWrapper {
   display: flex;
@@ -80,6 +95,7 @@ li {
   color: white;
   font-size: 1rem;
   font-weight: bolder;
+  align-items: center;
 }
 #paginDisplay {
   color: #ffffff;
