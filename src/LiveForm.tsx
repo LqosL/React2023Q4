@@ -1,6 +1,5 @@
-import { countries } from './redux/countries';
 import { UserInfoImageless } from './types/UserInfoImaged';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -8,6 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { formSchema } from './utils/FormSchema';
 import { updateResults } from './redux/resultsSlice';
 import { downloadAsBase64 } from './utils/Base64Exporter';
+import { CountriesSliceState } from './redux/countriesSlice';
 
 type PictureAsFile = {
   image: FileList;
@@ -16,6 +16,10 @@ type PictureAsFile = {
 function LiveForm() {
   const dispatcher = useDispatch();
   const navigate = useNavigate();
+  const countries: CountriesSliceState = useSelector<
+    { countries: CountriesSliceState },
+    CountriesSliceState
+  >((state) => state.countries);
 
   const {
     register,
@@ -44,9 +48,8 @@ function LiveForm() {
 
   const country = watch('country');
   const inputtedCountryLowercase = (country || '').toLowerCase();
-  const localCountries = countries;
   useEffect(() => {
-    const newCountriesToAutocomplete = localCountries.filter((country) => {
+    const newCountriesToAutocomplete = countries.filter((country) => {
       return country.toLowerCase().includes(inputtedCountryLowercase);
     });
     if (country == null || country.length === 0) {
@@ -69,7 +72,7 @@ function LiveForm() {
       setCountriesToAutocomplete(newCountriesToAutocomplete);
     }
   }, [
-    localCountries,
+    countries,
     country,
     countriesToAutocomplete,
     setCountriesToAutocomplete,
@@ -186,7 +189,7 @@ function LiveForm() {
           </fieldset>
         </div>
 
-        <div>
+        <div className={'countries_input'}>
           <label htmlFor={'country_input'}> Country </label>
           <div className={'country_input_wrapper'}>
             <input
@@ -196,12 +199,13 @@ function LiveForm() {
             />
           </div>
           {...countriesToAutocomplete.map((country) => (
-            <div key={country}>
+            <div className={'variant'} key={country}>
               <button
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   setValue('country', country);
+                  setCountriesToAutocomplete([]);
                 }}
               >
                 {country}

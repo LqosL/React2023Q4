@@ -39,6 +39,9 @@ input {
 .country_input_wrapper {
   display: flex;
   flex-direction: column;
-  margin-bottom: 10px;
+}
+
+.countries_input {
   border-bottom: 1px solid grey;
+  margin-bottom: 10px;
 }

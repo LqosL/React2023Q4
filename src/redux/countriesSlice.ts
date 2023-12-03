@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { countries, Country } from './countries';
+import { countries } from './countries';
 
-export type CountriesSliceState = Array<Country>;
+export type CountriesSliceState = Array<string>;
 
 const countriesSlice = createSlice({
   name: 'countries',
