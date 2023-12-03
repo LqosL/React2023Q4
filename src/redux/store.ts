@@ -1,12 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import {formSliceReducer} from "./formSlice";
-import {resultsSliceReducer} from "./resultsSlice";
+import { resultsSliceReducer } from './resultsSlice';
+import { countriesSliceReducer } from './countriesSlice';
 
 export const store = configureStore({
-    reducer: {
-        form: formSliceReducer,
-        results: resultsSliceReducer,
-    },
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(api.middleware),
+  reducer: {
+    results: resultsSliceReducer,
+    countries: countriesSliceReducer,
+  },
 });

@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "format:fix": "prettier --write src",
+    "fix": "prettier --write src",
     "preview": "vite preview",
     "prepare": "husky install"
   },
@@ -34,6 +34,7 @@
     "vite": "^4.4.5"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.3.2",
     "@reduxjs/toolkit": "^1.9.7",
     "react-hook-form": "^7.48.2",
     "react-redux": "^8.1.3",

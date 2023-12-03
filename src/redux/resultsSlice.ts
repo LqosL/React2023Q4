@@ -1,30 +1,35 @@
 import { CaseReducerActions, createSlice } from '@reduxjs/toolkit';
-import {UserInfo} from "../types/UserInfo";
+import { UserInfoImaged } from '../types/UserInfoImaged';
 
 export type ResultsStack = {
-    results: Array<UserInfo>,
-}
+  results: Array<UserInfoImaged>;
+};
 
 export type AddResultsAction = {
-    payload: UserInfo;
-}
+  payload: UserInfoImaged;
+};
 
 const resultsSlice = createSlice({
-    name: 'results',
-    initialState: {
-        results: [],
+  name: 'results',
+  initialState: {
+    results: [],
+  },
+  reducers: {
+    updateResults: (state: ResultsStack, action: AddResultsAction) => {
+      state.results.push(action.payload);
     },
-    reducers: {
-        updateResults: (state: ResultsStack, action: AddResultsAction) => {
-            state.results.push(action.payload);
-        },
-    },
+  },
 });
 
 export const {
-    updateResults,
+  updateResults,
 }: CaseReducerActions<
-    { updateResults: (state: Array<UserInfo>, action: AddResultsAction) => void },
-    string
+  {
+    updateResults: (
+      state: Array<UserInfoImaged>,
+      action: AddResultsAction
+    ) => void;
+  },
+  string
 > = resultsSlice.actions;
 export const resultsSliceReducer = resultsSlice.reducer;
