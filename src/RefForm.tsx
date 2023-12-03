@@ -137,19 +137,25 @@ function RefForm() {
         <div>
           <label htmlFor={'name_input'}> Name </label>
           <input id={'name_input'} type={'text'} ref={nameInputRef} />
-          <div ref={nameErrorRef}></div>
+          <div ref={nameErrorRef} className={'error_msg'}></div>
         </div>
 
         <div>
           <label htmlFor={'age_input'}> Age </label>
-          <input id={'age_input'} type={'number'} min={0} ref={ageInputRef} />
-          <div ref={ageErrorRef}></div>
+          <input
+            id={'age_input'}
+            type={'number'}
+            min={0}
+            ref={ageInputRef}
+            value={0}
+          />
+          <div ref={ageErrorRef} className={'error_msg'}></div>
         </div>
 
         <div>
           <label htmlFor={'email_input'}> Email </label>
           <input id={'email_input'} type={'email'} ref={emailInputRef} />
-          <div ref={emailErrorRef}></div>
+          <div ref={emailErrorRef} className={'error_msg'}></div>
         </div>
 
         <div>
@@ -161,7 +167,7 @@ function RefForm() {
               type={'text'}
               ref={password1InputRef}
             />
-            <div ref={password1ErrorRef}></div>
+            <div ref={password1ErrorRef} className={'error_msg'}></div>
             <br />
             <label htmlFor={'password2_input'}> Repeat password </label>
             <input
@@ -169,7 +175,7 @@ function RefForm() {
               type={'text'}
               ref={password2InputRef}
             />
-            <div ref={password2ErrorRef}></div>
+            <div ref={password2ErrorRef} className={'error_msg'}></div>
           </fieldset>
         </div>
 
@@ -182,7 +188,7 @@ function RefForm() {
               <option value={'other'}>Other</option>
             </select>
           </fieldset>
-          <div ref={genderErrorRef}></div>
+          <div ref={genderErrorRef} className={'error_msg'}></div>
         </div>
 
         <div>
@@ -198,7 +204,7 @@ function RefForm() {
               ref={acceptedInputRef}
             />
           </fieldset>
-          <div ref={acceptedErrorRef}></div>
+          <div ref={acceptedErrorRef} className={'error_msg'}></div>
         </div>
 
         <div>
@@ -211,7 +217,7 @@ function RefForm() {
               type={'file'}
               ref={imageInputRef}
             />
-            <div ref={imageErrorRef}></div>
+            <div ref={imageErrorRef} className={'error_msg'}></div>
           </fieldset>
         </div>
 
@@ -245,7 +251,7 @@ function RefForm() {
               </button>
             </div>
           ))}
-          <div ref={countryErrorRef}></div>
+          <div ref={countryErrorRef} className={'error_msg'}></div>
         </div>
         <button type={'submit'} onClick={onSubmit}>
           {' '}

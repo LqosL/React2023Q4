@@ -25,9 +25,17 @@ function App() {
       </div>
 
       <div className={'results_wrapper'}>Here there will be your results</div>
-      {historySlice.results.map((form) => (
-        <Tile key={JSON.stringify(form)} {...form} />
-      ))}
+      {historySlice.results.map((form, index) => {
+        if (index === historySlice.results.length - 1) {
+          return (
+            <div className={'newest_tile'} key={index}>
+              NEWEST:
+              <Tile key={JSON.stringify(form)} {...form} />
+            </div>
+          );
+        }
+        return <Tile key={JSON.stringify(form)} {...form} />;
+      })}
     </main>
   );
 }

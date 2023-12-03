@@ -25,7 +25,7 @@ function LiveForm() {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isValid },
     setValue,
   } = useForm<UserInfoImageless & PictureAsFile>({
     mode: 'onChange',
@@ -50,7 +50,7 @@ function LiveForm() {
   const inputtedCountryLowercase = (country || '').toLowerCase();
   useEffect(() => {
     const newCountriesToAutocomplete = countries.filter((country) => {
-      return country.toLowerCase().includes(inputtedCountryLowercase);
+      return country.toLowerCase().startsWith(inputtedCountryLowercase);
     });
     if (country == null || country.length === 0) {
       if (countriesToAutocomplete.length > 0) {
@@ -85,7 +85,7 @@ function LiveForm() {
         <div>
           <label htmlFor={'name_input'}> Name </label>
           <input id={'name_input'} type={'text'} {...register('name')} />
-          <div>{errors.name?.message || ''}</div>
+          <div className={'error_msg'}>{errors.name?.message || ''}</div>
         </div>
 
         <div>
@@ -96,13 +96,13 @@ function LiveForm() {
             min={0}
             {...register('age')}
           />
-          <div>{errors.age?.message || ''}</div>
+          <div className={'error_msg'}>{errors.age?.message || ''}</div>
         </div>
 
         <div>
           <label htmlFor={'email_input'}> Email </label>
           <input id={'email_input'} type={'email'} {...register('email')} />
-          <div>{errors.email?.message || ''}</div>
+          <div className={'error_msg'}>{errors.email?.message || ''}</div>
         </div>
 
         <div>
@@ -114,7 +114,7 @@ function LiveForm() {
               type={'text'}
               {...register('password1')}
             />
-            <div>{errors.password1?.message || ''}</div>
+            <div className={'error_msg'}>{errors.password1?.message || ''}</div>
             <br />
             <label htmlFor={'password2_input'}> Repeat password </label>
             <input
@@ -122,7 +122,7 @@ function LiveForm() {
               type={'text'}
               {...register('password2')}
             />
-            <div>{errors.password2?.message || ''}</div>
+            <div className={'error_msg'}>{errors.password2?.message || ''}</div>
           </fieldset>
         </div>
 
@@ -156,7 +156,7 @@ function LiveForm() {
               {...register('gender')}
             />
           </fieldset>
-          <div>{errors.gender?.message || ''}</div>
+          <div className={'error_msg'}>{errors.gender?.message || ''}</div>
         </div>
 
         <div>
@@ -172,7 +172,7 @@ function LiveForm() {
               {...register('acceptTerms')}
             />
           </fieldset>
-          <div>{errors.acceptTerms?.message || ''}</div>
+          <div className={'error_msg'}>{errors.acceptTerms?.message || ''}</div>
         </div>
 
         <div>
@@ -185,7 +185,7 @@ function LiveForm() {
               type={'file'}
               {...register('image')}
             />
-            <div>{errors.image?.message || ''}</div>
+            <div className={'error_msg'}>{errors.image?.message || ''}</div>
           </fieldset>
         </div>
 
@@ -212,9 +212,12 @@ function LiveForm() {
               </button>
             </div>
           ))}
-          <div>{errors.country?.message || ''}</div>
+          <div className={'error_msg'}>{errors.country?.message || ''}</div>
         </div>
-        <button type={'submit'}> Submit </button>
+        <button type={'submit'} disabled={!isValid}>
+          {' '}
+          Submit{' '}
+        </button>
       </form>
     </div>
   );

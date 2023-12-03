@@ -59,7 +59,7 @@ export const formSchema = object({
     .required()
     .test(
       'Extension requirement',
-      'File must have extension png/jpeg',
+      'File format must be either PNG or JPEG',
       (value) => {
         const file = value[0];
         return (

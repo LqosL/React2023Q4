@@ -45,3 +45,12 @@ input {
   border-bottom: 1px solid grey;
   margin-bottom: 10px;
 }
+.error_msg {
+  color: red;
+}
+.newest_tile {
+  border: 3px solid red;
+  border-radius: 15px;
+  text-align: center;
+  color: red;
+}
